@@ -1,26 +1,62 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import { Switch, Route, withRouter } from 'react-router-dom'
+
+import Dashboard from './Containers/Dashboard'
+import Authenticate from './Containers/Auth'
+import Header from './Components/Layout/Header'
+import SideDrawer from './Components/Layout/SideDrawer'
+import HomeContent from './Containers/HomeContent'
+
+import * as actions from './store/actions'
+import { connect } from 'react-redux'
+
+class App extends Component {
+  componentDidMount() {
+    this.props.onTryAutoSignup()
+  }
+
+  render() {
+    let routes =
+      <Switch>
+        <Route component={Authenticate} path='/auth/' />
+        <Route component={HomeContent} path='/' />
+      </Switch>
+
+    if (this.props.isAuth) {
+      routes =
+        <Switch>
+          <Route component={Dashboard} path='/courses/' />
+          <Route component={Authenticate} path='/auth/' />
+          <Route component={HomeContent} path='/' />
+        </Switch>
+    }
+
+    return (
+      <div>
+        <Header />
+        <SideDrawer
+          isOpen={this.props.isDrawerOpen}
+          closeDrawer={() => this.props.closeDrawer()}
+        />
+        {routes}
+      </div>
+    );
+  }
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    isAuth: state.token !== null,
+    isDrawerOpen: state.isDrawerOpen
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onTryAutoSignup: () => dispatch(actions.authCheckState()),
+    closeDrawer: () => dispatch(actions.setDrawer(false))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(App));
