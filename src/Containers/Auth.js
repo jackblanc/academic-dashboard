@@ -10,9 +10,10 @@ import { withStyles } from '@material-ui/core'
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 
-import * as actions from '../store/actions'
+import * as actions from '../store/actions/actions'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
+import firebase from '../firebase'
 
 const styles = theme => {
   return {
@@ -59,7 +60,18 @@ class Auth extends Component {
 
   submitHandler = (event) => {
     event.preventDefault()
-    this.props.onAuth(this.state.email, this.state.password, this.state.isSignUp)
+    firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
+      .catch(function (error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        if (errorCode === 'auth/wrong-password') {
+          alert('Wrong password.');
+        } else {
+          alert(errorMessage);
+        }
+        console.log(error);
+      });
   }
 
   render() {
@@ -73,7 +85,7 @@ class Auth extends Component {
     }
 
     let redirect = null;
-    if (this.props.isAuthenticated) {
+    if (firebase.auth().currentUser !== null) {
       redirect = <Redirect to='/courses' />
     }
 

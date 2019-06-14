@@ -2,18 +2,15 @@ import React from 'react';
 
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import * as actions from '../../store/actions'
+import * as actions from '../../store/actions/actions'
 
 import { AppBar, Toolbar, Typography, Button, IconButton } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
 import { makeStyles } from '@material-ui/styles';
 
+import firebase from '../../firebase'
+
 const useStyles = makeStyles(theme => ({
-  // button: {
-  //   color: '#fffbed',
-  //   fontSize: '16px',
-  //   fontWeight: 'bold'
-  // },
   root: {
     flexGrow: 1
   },
@@ -35,8 +32,7 @@ const header = function SignIn(props) {
       color='inherit'
       onClick={() => props.history.push('/auth')}
     >Sign In</Button>
-
-  if (props.isAuth) {
+  if (firebase.auth().currentUser !== null) {
     accountAccess =
       <Button
         className={classes.button}
@@ -66,12 +62,6 @@ const header = function SignIn(props) {
             Academic Dashboard
           </Typography>
           {accountAccess}
-          <br /> <br />
-          <Button
-            className={classes.button}
-            color='inherit'
-            onClick={() => props.saveData(props.token, props.courses, props.userID)}
-          >Save</Button>
         </Toolbar>
       </AppBar>
     </div>
@@ -80,19 +70,16 @@ const header = function SignIn(props) {
 
 const mapStateToProps = state => {
   return {
-    isAuth: state.token !== null,
-    isDrawerOpen: state.isDrawerOpen,
+    isAuth: state.data.token !== null,
     token: state.token,
-    userID: state.userID,
-    courses: state.allCourseData
+    isDrawerOpen: state.isDrawerOpen,
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
     logout: () => dispatch(actions.logout()),
-    toggleSideDrawer: (current) => dispatch(actions.setDrawer(!current)),
-    saveData: (token, data, userID) => dispatch(actions.saveUserData(token, data, userID))
+    toggleSideDrawer: (current) => dispatch(actions.setDrawer(!current))
   }
 }
 

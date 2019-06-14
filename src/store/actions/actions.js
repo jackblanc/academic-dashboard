@@ -1,5 +1,7 @@
 import * as actionTypes from './actionTypes'
-import axios from '../axios'
+import axios from '../../axios'
+
+import firebase from '../../firebase'
 
 // AUTHENTICATION ACTIONS
 
@@ -90,6 +92,7 @@ export const authCheckState = () => {
 }
 
 // CATEGORY ACTIONS
+
 export const addCategory = (category) => {
   return {
     newCategory: category,
@@ -173,13 +176,9 @@ export const fetchUserDataStart = () => {
 }
 
 export const saveUserData = (token, data, userID) => {
-  const userData = {
-    courseData: [...data],
-    userID: userID
-  }
   return dispatch => {
     dispatch(saveUserDataStart());
-    axios.post('/users/' + userID + '.json?auth=' + token, userData)
+    axios.patch('/users/' + userID + '.json?auth=' + token, data)
       .then(res => {
         dispatch(saveUserDataSuccess());
       })

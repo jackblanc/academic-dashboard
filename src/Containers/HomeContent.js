@@ -3,7 +3,7 @@ import CodeIcon from '@material-ui/icons/Code';
 import { Button } from '@material-ui/core'
 import EmptyState from '../Components/Layout/EmptyState';
 import { makeStyles } from '@material-ui/styles';
-import * as actions from '../store/actions';
+import * as actions from '../store/actions/actions';
 import { connect } from 'react-redux'
 
 const useStyles = makeStyles(theme => ({

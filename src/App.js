@@ -8,12 +8,13 @@ import Header from './Components/Layout/Header'
 import SideDrawer from './Components/Layout/SideDrawer'
 import HomeContent from './Containers/HomeContent'
 
-import * as actions from './store/actions'
+import * as actions from './store/actions/actions'
 import { connect } from 'react-redux'
+import fire from './firebase'
 
 class App extends Component {
   componentDidMount() {
-    this.props.onTryAutoSignup()
+    // this.props.onTryAutoSignup()
   }
 
   render() {
@@ -23,7 +24,7 @@ class App extends Component {
         <Route component={HomeContent} path='/' />
       </Switch>
 
-    if (this.props.isAuth) {
+    if (fire.auth().currentUser !== null) {
       routes =
         <Switch>
           <Route component={Dashboard} path='/courses/' />

@@ -1,6 +1,6 @@
-import * as actionTypes from './actionTypes';
+import * as actionTypes from '../actions/actionTypes';
 
-import { updateObject } from './util'
+import { updateObject } from '../util'
 
 const initialState = {
   // allCourseData: [
