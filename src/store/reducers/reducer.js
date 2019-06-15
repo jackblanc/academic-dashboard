@@ -201,7 +201,7 @@ const setDrawer = (state, action) => {
 
 const fetchUserDataSuccess = (state, action) => {
   return updateObject(state, {
-    allCourseData: action.data.courseData
+    allCourseData: action.payload
   })
 }
 

@@ -30,6 +30,7 @@ export const logout = () => {
   localStorage.removeItem('token')
   localStorage.removeItem('expirationDate')
   localStorage.removeItem('userID')
+  firebase.auth().signOut()
   return {
     type: actionTypes.AUTH_LOGOUT
   }
@@ -46,30 +47,11 @@ export const checkAuthTimeout = (expirationTime) => {
 export const auth = (email, password, isSignup) => {
   return dispatch => {
     dispatch(authStart());
-    const authData = {
-      email: email,
-      password: password,
-      returnSecureToken: true
-    };
-    let url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyCYCXB4wt7cz1Zb9rjjHeev0o1RSoNkfAU';
-    if (!isSignup) {
-      url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyCYCXB4wt7cz1Zb9rjjHeev0o1RSoNkfAU';
+    if (isSignup) {
+      firebase.auth().createUserWithEmailAndPassword(email, password)
+    } else {
+      firebase.auth().signInWithEmailAndPassword(email, password)
     }
-    axios.post(url, authData)
-      .then(response => {
-        console.log(response);
-        const expirationDate = new Date(new Date().getTime() + response.data.expiresIn * 1000)
-        localStorage.setItem('token', response.data.idToken);
-        localStorage.setItem('expirationDate', expirationDate);
-        localStorage.setItem('userId', response.data.localId);
-
-        dispatch(authSuccess(response.data.idToken, response.data.localId));
-        dispatch(checkAuthTimeout(response.data.expiresIn))
-      })
-      .catch(error => {
-        dispatch(authFail(error.response.data.error));
-      })
-
   };
 };
 

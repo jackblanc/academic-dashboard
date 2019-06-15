@@ -35,7 +35,7 @@ function HomeContent(props) {
       description="A revolutionary tool that allows students to stay on top of their coursework"
       button={
         <Button color='primary' onClick={() => props.history.push('/auth')}>
-          Sign In
+          {props.isAuthenticated ? 'Enter Dashboard' : 'Sign In'}
         </Button>
       }
     />
@@ -44,7 +44,7 @@ function HomeContent(props) {
 
 const mapStateToProps = state => {
   return {
-    isAuthenticated: state.token !== null
+    isAuthenticated: state.main.isAuthenticated
   }
 }
 

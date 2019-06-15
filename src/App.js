@@ -48,8 +48,8 @@ class App extends Component {
 
 const mapStateToProps = state => {
   return {
-    isAuth: state.token !== null,
-    isDrawerOpen: state.isDrawerOpen
+    isAuth: state.main.token !== null,
+    isDrawerOpen: state.main.isDrawerOpen
   }
 }
 

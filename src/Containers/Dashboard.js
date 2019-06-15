@@ -8,7 +8,6 @@ import MaterialTable from 'material-table'
 
 import CourseNotecard from '../Components/CourseNotecard'
 import Loading from '../Components/UI/Loading'
-import firebase from '../firebase';
 
 const tableColumns = [
   { title: 'Category Name', field: 'category' },
@@ -119,22 +118,14 @@ const allCourseData = [
 class Dashboard extends Component {
 
   render() {
-    const coursesList = firebase.database().ref('/users/')
-      .child(firebase.auth().currentUser.uid)
-      .child('courseData')
-      .once('value')
-      .then(snap => {
-        coursesList = snap.val()
-        console.log(snap.val())
-      });
-
-    if (coursesList === null) {
+    console.log(this.props.allCourseData)
+    if (this.props.allCourseData === null) {
       return (<Loading />)
     }
 
     let viewCourse = null
     // eslint-disable-next-line
-    coursesList.map(course => {
+    this.props.allCourseData.map(course => {
       if (course.isSelected) {
         viewCourse =
           <MaterialTable // use nested rows to represent assignments
@@ -195,9 +186,9 @@ class Dashboard extends Component {
 
 const mapStateToProps = state => {
   return {
-    allCourseData: state.allCourseData,
-    token: state.token,
-    userID: state.userID,
+    allCourseData: state.main.allCourseData,
+    token: state.main.token,
+    userID: state.main.userID,
   }
 }
 

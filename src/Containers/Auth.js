@@ -13,7 +13,6 @@ import Container from '@material-ui/core/Container';
 import * as actions from '../store/actions/actions'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
-import firebase from '../firebase'
 
 const styles = theme => {
   return {
@@ -60,18 +59,7 @@ class Auth extends Component {
 
   submitHandler = (event) => {
     event.preventDefault()
-    firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
-      .catch(function (error) {
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        if (errorCode === 'auth/wrong-password') {
-          alert('Wrong password.');
-        } else {
-          alert(errorMessage);
-        }
-        console.log(error);
-      });
+    this.props.onAuth(this.state.email, this.state.password, this.state.isSignUp)
   }
 
   render() {
@@ -85,7 +73,8 @@ class Auth extends Component {
     }
 
     let redirect = null;
-    if (firebase.auth().currentUser !== null) {
+    console.log(this.props.token)
+    if (this.props.isAuthenticated) {
       redirect = <Redirect to='/courses' />
     }
 
@@ -167,9 +156,9 @@ class Auth extends Component {
 
 const mapStateToProps = state => {
   return {
-    loading: state.loading,
-    error: state.error,
-    isAuthenticated: state.token !== null
+    loading: state.main.loading,
+    error: state.main.error,
+    isAuthenticated: state.main.isAuthenticated
   }
 }
 

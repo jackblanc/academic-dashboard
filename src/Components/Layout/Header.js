@@ -32,6 +32,8 @@ const header = function SignIn(props) {
       color='inherit'
       onClick={() => props.history.push('/auth')}
     >Sign In</Button>
+
+  console.log(firebase.auth().currentUser)
   if (firebase.auth().currentUser !== null) {
     accountAccess =
       <Button
@@ -70,9 +72,9 @@ const header = function SignIn(props) {
 
 const mapStateToProps = state => {
   return {
-    isAuth: state.data.token !== null,
-    token: state.token,
-    isDrawerOpen: state.isDrawerOpen,
+    isAuth: state.main.token !== null,
+    token: state.main.token,
+    isDrawerOpen: state.main.isDrawerOpen,
   }
 }
 
