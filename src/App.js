@@ -8,9 +8,8 @@ import Header from './Components/Layout/Header'
 import SideDrawer from './Components/Layout/SideDrawer'
 import HomeContent from './Containers/HomeContent'
 
-import * as actions from './store/actions/actions'
+import * as actions from './store/actions/index'
 import { connect } from 'react-redux'
-import fire from './firebase'
 
 class App extends Component {
   componentDidMount() {
@@ -24,7 +23,7 @@ class App extends Component {
         <Route component={HomeContent} path='/' />
       </Switch>
 
-    if (fire.auth().currentUser !== null) {
+    if (this.props.isAuthenticated) {
       routes =
         <Switch>
           <Route component={Dashboard} path='/courses/' />
@@ -48,15 +47,14 @@ class App extends Component {
 
 const mapStateToProps = state => {
   return {
-    isAuth: state.token !== null,
-    isDrawerOpen: state.isDrawerOpen
+    isDrawerOpen: state.ui.isDrawerOpen,
+    isAuthenticated: state.auth.isAuthenticated
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    onTryAutoSignup: () => dispatch(actions.authCheckState()),
-    closeDrawer: () => dispatch(actions.setDrawer(false))
+    closeDrawer: () => dispatch(actions.setDrawerState(false))
   }
 }
 

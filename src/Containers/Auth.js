@@ -10,10 +10,9 @@ import { withStyles } from '@material-ui/core'
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 
-import * as actions from '../store/actions/actions'
+import * as actions from '../store/actions/index'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
-import firebase from '../firebase'
 
 const styles = theme => {
   return {
@@ -50,28 +49,17 @@ class Auth extends Component {
   state = {
     email: '',
     password: '',
-    isSignUp: false
+    isSignIn: true
   }
 
   onAlternate = () => {
-    const bool = this.state.isSignUp
-    this.setState({ isSignUp: !bool })
+    const bool = this.state.isSignIn
+    this.setState({ isSignIn: !bool })
   }
 
   submitHandler = (event) => {
     event.preventDefault()
-    firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
-      .catch(function (error) {
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        if (errorCode === 'auth/wrong-password') {
-          alert('Wrong password.');
-        } else {
-          alert(errorMessage);
-        }
-        console.log(error);
-      });
+    this.props.onAuth(this.state.email, this.state.password, this.state.isSignIn)
   }
 
   render() {
@@ -80,12 +68,12 @@ class Auth extends Component {
     let errorMessage = '';
     if (this.props.error) {
       errorMessage = (
-        <Typography className={classes.error}>{this.props.error.message.replace('_', ' ')}</Typography>
+        <Typography className={classes.error}>{this.props.error.replace('_', ' ')}</Typography>
       )
     }
 
     let redirect = null;
-    if (firebase.auth().currentUser !== null) {
+    if (this.props.isAuthenticated) {
       redirect = <Redirect to='/courses' />
     }
 
@@ -98,7 +86,7 @@ class Auth extends Component {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            {this.state.isSignUp ? 'Sign Up' : 'Sign In'}
+            {this.state.isSignIn ? 'Sign In' : 'Sign Up'}
           </Typography>
           <form className={classes.form} noValidate>
             <TextField
@@ -146,14 +134,14 @@ class Auth extends Component {
               className={classes.submit}
               onClick={this.submitHandler}
             >
-              {this.state.isSignUp ? 'Sign Up' : 'Sign In'}
+              {this.state.isSignIn ? 'Sign In' : 'Sign Up'}
             </Button>
             <Grid container>
               <Grid item xs>
               </Grid>
               <Grid item>
                 <Link onClick={this.onAlternate} variant="body2">
-                  {this.state.isSignUp ? "Already have an account? Sign In" : "Don't have an account? Sign Up"}
+                  {this.state.isSignIn ? "Don't have an account? Sign Up" : "Already have an account? Sign In"}
                 </Link>
               </Grid>
             </Grid>
@@ -167,15 +155,14 @@ class Auth extends Component {
 
 const mapStateToProps = state => {
   return {
-    loading: state.loading,
-    error: state.error,
-    isAuthenticated: state.token !== null
+    isAuthenticated: state.auth.isAuthenticated,
+    error: state.auth.error
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAuth: (email, password, isSignup) => dispatch(actions.auth(email, password, isSignup))
+    onAuth: (email, password, isSignIn) => dispatch(actions.authenticate(email, password, isSignIn))
   }
 }
 

@@ -2,13 +2,11 @@ import React from 'react';
 
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import * as actions from '../../store/actions/actions'
+import * as actions from '../../store/actions/index'
 
 import { AppBar, Toolbar, Typography, Button, IconButton } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
 import { makeStyles } from '@material-ui/styles';
-
-import firebase from '../../firebase'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -32,7 +30,7 @@ const header = function SignIn(props) {
       color='inherit'
       onClick={() => props.history.push('/auth')}
     >Sign In</Button>
-  if (firebase.auth().currentUser !== null) {
+  if (props.isAuthenticated) {
     accountAccess =
       <Button
         className={classes.button}
@@ -70,16 +68,15 @@ const header = function SignIn(props) {
 
 const mapStateToProps = state => {
   return {
-    isAuth: state.data.token !== null,
-    token: state.token,
-    isDrawerOpen: state.isDrawerOpen,
+    isAuthenticated: state.auth.isAuthenticated,
+    isDrawerOpen: state.ui.isDrawerOpen,
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    logout: () => dispatch(actions.logout()),
-    toggleSideDrawer: (current) => dispatch(actions.setDrawer(!current))
+    toggleSideDrawer: (current) => dispatch(actions.setDrawerState(!current)),
+    logout: () => dispatch(actions.logout())
   }
 }
 
