@@ -9,6 +9,6 @@ var config = {
 };
 var fire = firebase.initializeApp(config);
 
-fire.auth().setPersistence(firebase.auth.Auth.Persistence.NONE)
+// fire.auth().setPersistence(firebase.auth.Auth.Persistence.NONE)
 
 export default fire;

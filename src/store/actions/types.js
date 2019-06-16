@@ -8,3 +8,4 @@ export const AUTH_LOGOUT = 'AUTH_LOGOUT'
 
 // DATA
 export const FETCH_USER_DATA = 'FETCH_USER_DATA'
+export const COURSE_SELECTED = 'COURSE_SELECTED'

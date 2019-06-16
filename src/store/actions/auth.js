@@ -5,14 +5,12 @@ import firebase from '../../firebase'
 export const authenticate = (email, password, isSignIn) => dispatch => {
   if (isSignIn) {
     firebase.auth().signInWithEmailAndPassword(email, password)
+      .then(res => dispatch(authSuccess()))
       .catch(err => dispatch(authError(err.message)))
   } else {
     firebase.auth().createUserWithEmailAndPassword(email, password)
+      .then(res => dispatch(authSuccess()))
       .catch(err => dispatch(authError(err.message)))
-  }
-
-  if (firebase.auth().currentUser !== null) {
-    dispatch(authSuccess())
   }
 }
 

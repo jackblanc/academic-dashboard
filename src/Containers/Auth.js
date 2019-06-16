@@ -57,8 +57,7 @@ class Auth extends Component {
     this.setState({ isSignIn: !bool })
   }
 
-  submitHandler = (event) => {
-    event.preventDefault()
+  submitHandler = () => {
     this.props.onAuth(this.state.email, this.state.password, this.state.isSignIn)
   }
 
@@ -88,7 +87,7 @@ class Auth extends Component {
           <Typography component="h1" variant="h5">
             {this.state.isSignIn ? 'Sign In' : 'Sign Up'}
           </Typography>
-          <form className={classes.form} noValidate>
+          <form className={classes.form}>
             <TextField
               variant="outlined"
               margin="normal"
@@ -132,7 +131,10 @@ class Auth extends Component {
               variant="contained"
               color="primary"
               className={classes.submit}
-              onClick={this.submitHandler}
+              onClick={(event) => {
+                event.preventDefault()
+                this.props.onAuth(this.state.email, this.state.password, this.state.isSignIn)
+              }}
             >
               {this.state.isSignIn ? 'Sign In' : 'Sign Up'}
             </Button>

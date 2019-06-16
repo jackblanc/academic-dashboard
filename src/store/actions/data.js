@@ -12,3 +12,10 @@ export const fetchUserData = () => dispatch => {
       })
     })
 }
+
+export const courseSelectedHandler = (ID) => {
+  return {
+    type: types.COURSE_SELECTED,
+    payload: ID
+  }
+}

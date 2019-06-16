@@ -1,6 +1,11 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
+import { ListItem, ListItemIcon, ListItemText, Divider, List } from '@material-ui/core'
+import AllCourses from '@material-ui/icons/BorderAll';
+import HomeIcon from '@material-ui/icons/Home'
+
+import { withRouter } from 'react-router-dom'
 
 const useStyles = makeStyles({
   list: {
@@ -11,37 +16,36 @@ const useStyles = makeStyles({
   },
 });
 
-export default function SideDrawer(props) {
+function SideDrawer(props) {
   const classes = useStyles();
 
-  const sideList = side => (
+  const sideList = (
     <div
       className={classes.list}
       role="presentation"
     >
-      {/* <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
+      <List>
+        <ListItem button onClick={() => props.history.push('/')}>
+          <ListItemIcon><HomeIcon /></ListItemIcon>
+          <ListItemText>Home</ListItemText>
+        </ListItem>
+        <ListItem button onClick={() => props.history.push('/courses')}>
+          <ListItemIcon><AllCourses /></ListItemIcon>
+          <ListItemText>All Courses</ListItemText>
+        </ListItem>
       </List>
       <Divider />
       <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List> */}
+
+      </List>
     </div>
   );
 
   return (
     <Drawer open={props.isOpen} onClose={() => props.closeDrawer()}>
-      {sideList('left')}
+      {sideList}
     </Drawer>
   );
 }
+
+export default withRouter(SideDrawer)

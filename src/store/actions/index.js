@@ -8,5 +8,6 @@ export {
 } from './auth'
 
 export {
-  fetchUserData
+  fetchUserData,
+  courseSelectedHandler
 } from './data'
