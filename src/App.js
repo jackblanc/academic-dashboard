@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Switch, Route, withRouter } from 'react-router-dom'
+import { Switch, Route, withRouter, Redirect } from 'react-router-dom'
 
 import Dashboard from './Containers/Dashboard'
 import Authenticate from './Containers/Auth'
@@ -10,21 +10,29 @@ import HomeContent from './Containers/HomeContent'
 
 import * as actions from './store/actions/index'
 import { connect } from 'react-redux'
+import Course from './Containers/Course';
 
 class App extends Component {
+  componentDidMount() {
+    this.props.tryAutoAuth()
+  }
+
   render() {
     let routes =
       <Switch>
         <Route component={Authenticate} path='/auth/' />
-        <Route component={HomeContent} path='/' />
+        <Route exact component={HomeContent} path='/' />
+        <Redirect to='/' />
       </Switch>
 
     if (this.props.isAuthenticated) {
       routes =
         <Switch>
-          <Route component={Dashboard} path='/courses/' />
+          <Route component={Course} path='/courses/:id' />
+          <Route component={Dashboard} path='/dashboard/' />
           <Route component={Authenticate} path='/auth/' />
-          <Route component={HomeContent} path='/' />
+          <Route exact component={HomeContent} path='/' />
+          <Redirect to='/' />
         </Switch>
     }
 
@@ -50,8 +58,20 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    closeDrawer: () => dispatch(actions.setDrawerState(false))
+    closeDrawer: () => dispatch(actions.setDrawerState(false)),
+    tryAutoAuth: () => dispatch(actions.tryAutoAuth())
   }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(App));
+
+
+/*
+
+Immediate Problems:
+- Slider
+- ADD_COURSE
+
+Large To-do List:
+- DELETE_COURSE
+*/

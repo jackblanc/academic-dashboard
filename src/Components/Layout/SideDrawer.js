@@ -29,9 +29,9 @@ function SideDrawer(props) {
           <ListItemIcon><HomeIcon /></ListItemIcon>
           <ListItemText>Home</ListItemText>
         </ListItem>
-        <ListItem button onClick={() => props.history.push('/courses')}>
+        <ListItem button onClick={() => props.history.push('/dashboard')}>
           <ListItemIcon><AllCourses /></ListItemIcon>
-          <ListItemText>All Courses</ListItemText>
+          <ListItemText>Dashboard</ListItemText>
         </ListItem>
       </List>
       <Divider />

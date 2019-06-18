@@ -30,6 +30,7 @@ const header = function SignIn(props) {
       color='inherit'
       onClick={() => props.history.push('/auth')}
     >Sign In</Button>
+  let sideDrawerButton = null
   if (props.isAuthenticated) {
     accountAccess =
       <Button
@@ -37,22 +38,23 @@ const header = function SignIn(props) {
         color='inherit'
         onClick={() => props.logout()}
       >Logout</Button>
+    sideDrawerButton = <IconButton edge="start"
+      className={classes.menuButton}
+      color="inherit"
+      aria-label="Menu"
+      onClick={() => {
+        const cur = props.isDrawerOpen
+        props.toggleSideDrawer(cur)
+      }}>
+      <MenuIcon />
+    </IconButton>
   }
 
   return (
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="Menu"
-            onClick={() => {
-              const cur = props.isDrawerOpen
-              props.toggleSideDrawer(cur)
-            }}>
-            <MenuIcon />
-          </IconButton>
+          {sideDrawerButton}
           <Typography
             onClick={() => props.history.push('/')}
             variant='h6'

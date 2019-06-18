@@ -14,6 +14,14 @@ export const authenticate = (email, password, isSignIn) => dispatch => {
   }
 }
 
+export const tryAutoAuth = () => dispatch => {
+  firebase.auth().onAuthStateChanged(user => {
+    if (user) {
+      dispatch(authSuccess())
+    }
+  })
+}
+
 export const authSuccess = () => {
   return {
     type: types.AUTH_SUCCESS

@@ -1,13 +1,19 @@
 export {
-  setDrawerState
+  setSelectedCourse,
+  setDrawerState,
+  setAddCourseDialogState
 } from './ui'
 
 export {
   authenticate,
-  logout
+  logout,
+  tryAutoAuth
 } from './auth'
 
 export {
   fetchUserData,
-  courseSelectedHandler
+  addCategoryToCourse,
+  editCategoryInCourse,
+  removeCategoryFromCourse,
+  addCourse
 } from './data'
