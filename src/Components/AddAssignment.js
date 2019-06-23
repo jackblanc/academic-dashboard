@@ -56,7 +56,7 @@ class AddCourse extends Component {
           <TextField
             margin="dense"
             id="ID"
-            label="Assignment Score (as a fraction)"
+            label="Assignment Score (as a fraction, points earned/points possible)"
             type="text"
             fullWidth
             autoComplete='off'

@@ -14,9 +14,7 @@ export {
 
 export {
   fetchUserData,
-  addCategoryToCourse,
-  editCategoryInCourse,
-  removeCategoryFromCourse,
   addCourse,
-  addAssignment
+  addAssignment,
+  removeAssignment
 } from './data'

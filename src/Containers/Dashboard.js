@@ -125,9 +125,6 @@ const mapDispatchToProps = dispatch => {
     fetchUserData: () => dispatch(actions.fetchUserData()),
     courseSelectedHandler: (ID) => dispatch(actions.setSelectedCourse(ID)),
     setAddCourseDialogState: (boolean) => dispatch(actions.setAddCourseDialogState(boolean)),
-    onAddCategory: (newCategory) => dispatch(actions.addCategoryToCourse(newCategory)),
-    onEditCategory: (categoryName, newData) => dispatch(actions.editCategoryInCourse(categoryName, newData)),
-    onRemoveCategory: (categoryName) => dispatch(actions.removeCategoryFromCourse(categoryName))
   }
 }
 

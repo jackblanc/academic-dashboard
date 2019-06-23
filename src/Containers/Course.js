@@ -49,6 +49,9 @@ class Course extends Component {
             <TableRow key={assignmentName}>
               <TableCell>{assignmentName}</TableCell>
               <TableCell>{category.assignments[assignmentName]}</TableCell>
+              <TableCell><Button onClick={() => {
+                this.props.removeAssignment(assignmentName, this.props.selectedCourseID, this.props.selectedCategoryName)
+              }}>Delete</Button></TableCell>
             </TableRow>
           )
         }
@@ -73,12 +76,13 @@ class Course extends Component {
                   <TableHead>
                     <TableRow>
                       <TableCell>Assignment Name</TableCell>
-                      <TableCell>Assignment Score</TableCell>
+                      <TableCell>Score</TableCell>
+                      <TableCell>Actions</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {assignmentRows}
-                    <TableCell colSpan={2}><Button onClick={() => this.props.setAddAssignmentDialogState(true)}>
+                    <TableCell colSpan={3}><Button onClick={() => this.props.setAddAssignmentDialogState(true)}>
                       Add an Assignment
                     </Button></TableCell>
                   </TableBody>
@@ -120,14 +124,15 @@ const mapStateToProps = state => {
     selectedCourseID: state.ui.selectedCourseID,
     coursesList: state.data.coursesList,
     selectedCategoryName: state.ui.selectedCategoryName,
-    showAddAssignmentDialog: state.ui.showAddAssignmentDialog
+    showAddAssignmentDialog: state.ui.showAddAssignmentDialog,
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
     setSelectedCategory: (name) => dispatch(actions.setSelectedCategoryName(name)),
-    setAddAssignmentDialogState: boolean => dispatch(actions.setAddAssignmentDialogState(boolean))
+    setAddAssignmentDialogState: boolean => dispatch(actions.setAddAssignmentDialogState(boolean)),
+    removeAssignment: (name, courseID, categoryName) => dispatch(actions.removeAssignment(name, courseID, categoryName))
   }
 }
 
