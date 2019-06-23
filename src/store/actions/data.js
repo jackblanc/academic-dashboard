@@ -23,6 +23,19 @@ export const addCourse = (courseID, courseData) => dispatch => {
     })
 }
 
+export const addAssignment = (assignmentName, assignmentScore, courseID, categoryName) => dispatch => {
+  console.log('here')
+  firebase.database().ref('/users/')
+    .child(firebase.auth().currentUser.uid)
+    .child('/courseData')
+    .child(courseID)
+    .child('/categories/')
+    .child(categoryName)
+    .child('/assignments/')
+    .child(assignmentName)
+    .set(assignmentScore)
+}
+
 
 
 export const addCategoryToCourse = (newCategory) => {

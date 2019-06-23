@@ -13,7 +13,8 @@ import { connect } from 'react-redux'
 import Course from './Containers/Course';
 
 class App extends Component {
-  componentDidMount() {
+  constructor(props) {
+    super(props)
     this.props.tryAutoAuth()
   }
 
@@ -58,6 +59,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    fetchUserData: () => dispatch(actions.fetchUserData()),
     closeDrawer: () => dispatch(actions.setDrawerState(false)),
     tryAutoAuth: () => dispatch(actions.tryAutoAuth())
   }
@@ -67,11 +69,5 @@ export default connect(mapStateToProps, mapDispatchToProps)(withRouter(App));
 
 
 /*
-
-Immediate Problems:
-- Slider
-- ADD_COURSE
-
-Large To-do List:
-- DELETE_COURSE
+-
 */

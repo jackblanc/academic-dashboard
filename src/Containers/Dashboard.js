@@ -10,7 +10,6 @@ import {
 import { AddCircle } from '@material-ui/icons'
 
 import { convertCategoriesToNumeric } from '../store/util'
-import Loading from '../Components/UI/Loading'
 import AddCourse from '../Components/AddCourse';
 
 const styles = theme => {

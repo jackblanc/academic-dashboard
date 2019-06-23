@@ -10,9 +10,10 @@ export const convertCategoriesToNumeric = (categories) => {
   let denominator = 0
   for (const key in categories) {
     const category = categories[key]
-
-    numerator += (convertAssignmentsToPercent(category.assignments) / 100) * category.weight
-    denominator += category.weight
+    if (category.assignments) {
+      numerator += (convertAssignmentsToPercent(category.assignments) / 100) * category.weight
+      denominator += category.weight
+    }
   }
   let ans = (numerator / denominator) * 100
   ans = ans.toFixed(2)

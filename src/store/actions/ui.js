@@ -20,3 +20,17 @@ export const setAddCourseDialogState = (boolean) => {
     payload: boolean
   }
 }
+
+export const setSelectedCategoryName = name => {
+  return {
+    type: type.SET_SELECTED_CATEGORY_NAME,
+    payload: name
+  }
+}
+
+export const setAddAssignmentDialogState = boolean => {
+  return {
+    type: type.SET_ADD_ASSIGNMENT_DIALOG_STATE,
+    payload: boolean
+  }
+}

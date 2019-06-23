@@ -1,7 +1,9 @@
 export {
   setSelectedCourse,
   setDrawerState,
-  setAddCourseDialogState
+  setAddCourseDialogState,
+  setSelectedCategoryName,
+  setAddAssignmentDialogState
 } from './ui'
 
 export {
@@ -15,5 +17,6 @@ export {
   addCategoryToCourse,
   editCategoryInCourse,
   removeCategoryFromCourse,
-  addCourse
+  addCourse,
+  addAssignment
 } from './data'

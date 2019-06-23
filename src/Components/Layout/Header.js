@@ -50,13 +50,15 @@ const header = function SignIn(props) {
     </IconButton>
   }
 
+  const redirectPath = props.isAuthenticated ? '/dashboard' : '/'
+
   return (
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
           {sideDrawerButton}
           <Typography
-            onClick={() => props.history.push('/')}
+            onClick={() => props.history.push(redirectPath)}
             variant='h6'
             className={classes.title}>
             Academic Dashboard

@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { Table, TableHead, TableRow, TableCell, TableBody, withStyles, Typography } from '@material-ui/core';
-import { convertAssignmentsToPercent } from '../store/util';
+import { Table, TableHead, TableRow, TableCell, TableBody, withStyles, Typography, Button } from '@material-ui/core';
+import { convertAssignmentsToPercent, convertCategoriesToNumeric } from '../store/util';
+import * as actions from '../store/actions/index'
+import AddAssignment from '../Components/AddAssignment';
 
 const styles = theme => {
   return {
@@ -24,33 +26,77 @@ const styles = theme => {
 }
 
 class Course extends Component {
-  constructor(props) {
-    super(props)
-    const selectedCourseData = this.props.coursesList[this.props.selectedCourseID]
-    this.state = {
-      courseData: selectedCourseData
-    }
-  }
 
   render() {
     const { classes } = this.props
-    const rows = []
-    for (const key in this.state.courseData.categories) {
-      const category = {
-        ...this.state.courseData.categories[key],
-        name: key
-      }
-      rows.push(
-        <TableRow key={category.name}>
-          <TableCell>{category.name}</TableCell>
-          <TableCell>{category.weight}</TableCell>
-          <TableCell>{convertAssignmentsToPercent(category.assignments) + '%'}</TableCell>
-        </TableRow>)
+    const categoryRows = []
+
+    let addAssignmentDialog = null
+    if (this.props.showAddAssignmentDialog) {
+      addAssignmentDialog = <AddAssignment />
     }
 
+    for (const key in this.props.coursesList[this.props.selectedCourseID].categories) {
+      const category = {
+        ...this.props.coursesList[this.props.selectedCourseID].categories[key],
+        name: key
+      }
+
+      const assignmentRows = []
+      if (this.props.selectedCategoryName) {
+        for (const assignmentName in category.assignments) {
+          assignmentRows.push(
+            <TableRow key={assignmentName}>
+              <TableCell>{assignmentName}</TableCell>
+              <TableCell>{category.assignments[assignmentName]}</TableCell>
+            </TableRow>
+          )
+        }
+      }
+      const categoryValue = convertAssignmentsToPercent(category.assignments)
+      const displayValue = categoryValue === "NaN" ? "No Data" : categoryValue + '%'
+      categoryRows.push(
+        <Fragment key={category.name}>
+          <TableRow>
+            <TableCell>{category.name}</TableCell>
+            <TableCell>{category.weight}</TableCell>
+            <TableCell>
+              <Button onClick={() => this.props.setSelectedCategory(category.name)}>
+                {displayValue}
+              </Button>
+            </TableCell>
+          </TableRow>
+          {this.props.selectedCategoryName === category.name ? (
+            <TableRow>
+              <TableCell colSpan={3}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Assignment Name</TableCell>
+                      <TableCell>Assignment Score</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {assignmentRows}
+                    <TableCell colSpan={2}><Button onClick={() => this.props.setAddAssignmentDialogState(true)}>
+                      Add an Assignment
+                    </Button></TableCell>
+                  </TableBody>
+                </Table>
+              </TableCell>
+            </TableRow>
+          ) : null}
+        </Fragment>
+      )
+    }
+
+    const numericGrade = convertCategoriesToNumeric(this.props.coursesList[this.props.selectedCourseID].categories)
+    const displayGrade = numericGrade === "NaN" ? "No Grade Data" : numericGrade + '%'
     return (
       <div className={classes.paper}>
-        <Typography variant='h2' className={classes.title}>{this.state.courseData.title}</Typography>
+        {addAssignmentDialog}
+        <Typography variant='h2' className={classes.title}>{this.props.coursesList[this.props.selectedCourseID].title}</Typography>
+        <Typography variant='h4' className={classes.title}>{'Current Grade: ' + displayGrade}</Typography>
         <Table >
           <TableHead className={classes.tableHead}>
             <TableRow>
@@ -60,7 +106,7 @@ class Course extends Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows}
+            {categoryRows}
           </TableBody>
 
         </Table>
@@ -72,13 +118,16 @@ class Course extends Component {
 const mapStateToProps = state => {
   return {
     selectedCourseID: state.ui.selectedCourseID,
-    coursesList: state.data.coursesList
+    coursesList: state.data.coursesList,
+    selectedCategoryName: state.ui.selectedCategoryName,
+    showAddAssignmentDialog: state.ui.showAddAssignmentDialog
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-
+    setSelectedCategory: (name) => dispatch(actions.setSelectedCategoryName(name)),
+    setAddAssignmentDialogState: boolean => dispatch(actions.setAddAssignmentDialogState(boolean))
   }
 }
 

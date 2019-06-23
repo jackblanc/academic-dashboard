@@ -5,7 +5,9 @@ import { updateObject } from '../util'
 const initialState = {
   isDrawerOpen: false,
   showAddCourseDialog: false,
-  selectedCourseID: null
+  selectedCourseID: null,
+  selectedCategoryName: null,
+  showAddAssignmentDialog: false
 }
 
 export default (state = initialState, action) => {
@@ -16,6 +18,14 @@ export default (state = initialState, action) => {
       return updateObject(state, { selectedCourseID: action.payload })
     case types.SET_ADD_COURSE_DIALOG_STATE:
       return updateObject(state, { showAddCourseDialog: action.payload })
+    case types.SET_SELECTED_CATEGORY_NAME:
+      if (state.selectedCategoryName === action.payload) {
+        return updateObject(state, { selectedCategoryName: null })
+      } else {
+        return updateObject(state, { selectedCategoryName: action.payload })
+      }
+    case types.SET_ADD_ASSIGNMENT_DIALOG_STATE:
+      return updateObject(state, { showAddAssignmentDialog: action.payload })
     default: return state
   }
 }

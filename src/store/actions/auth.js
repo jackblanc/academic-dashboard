@@ -1,6 +1,7 @@
 import * as types from './types'
 
 import firebase from '../../firebase'
+import { fetchUserData } from './data';
 
 export const authenticate = (email, password, isSignIn) => dispatch => {
   if (isSignIn) {
@@ -18,6 +19,7 @@ export const tryAutoAuth = () => dispatch => {
   firebase.auth().onAuthStateChanged(user => {
     if (user) {
       dispatch(authSuccess())
+      dispatch(fetchUserData())
     }
   })
 }
