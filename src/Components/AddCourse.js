@@ -24,6 +24,7 @@ class AddCourse extends Component {
   state = {
     courseName: "",
     courseID: "",
+    credits: null,
     categories: [
       {
         name: "",
@@ -79,6 +80,21 @@ class AddCourse extends Component {
                 this.setState({
                   ...this.state,
                   courseID: event.target.value
+                })
+              }}
+            />
+            <TextField
+              margin="dense"
+              id="Credits"
+              label="# of Credits"
+              type="text"
+              fullWidth
+              autoComplete='off'
+              value={this.state.credits}
+              onChange={(event) => {
+                this.setState({
+                  ...this.state,
+                  credits: event.target.value
                 })
               }}
             />
@@ -192,13 +208,15 @@ class AddCourse extends Component {
     console.log(flag)
     const course = {
       title: this.state.courseName,
+      credits: this.state.credits,
       categories: {
         ...newCategories
       }
     }
     if (sumWeights !== 100) {
       this.setState({ error: "Error! Weights must sum to 100%" })
-    } else if (this.state.courseID === "" || course.categories === null || course.title === "") {
+    } else if (this.state.courseID === "" || course.categories === null
+      || course.title === "" || course.credits === null) {
       this.setState({ error: "Error! Inputs cannot be empty" })
     } else if (flag === true) {
       this.setState({ error: "Error! Category names cannot be empty" })

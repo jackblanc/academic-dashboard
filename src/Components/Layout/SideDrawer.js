@@ -9,6 +9,7 @@ import LibraryBooks from '@material-ui/icons/LibraryBooks'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import * as actions from '../../store/actions/index'
+import { Grade } from '@material-ui/icons';
 
 const useStyles = makeStyles({
   list: {
@@ -45,15 +46,23 @@ function SideDrawer(props) {
         <ListItem button onClick={() => {
           props.history.push('/')
           props.closeDrawer()
-          }}>
+        }}>
           <ListItemIcon><HomeIcon /></ListItemIcon>
           <ListItemText>Home</ListItemText>
         </ListItem>
         <ListItem button onClick={() => {
           props.history.push('/dashboard')
-          props.closeDrawer()}}>
+          props.closeDrawer()
+        }}>
           <ListItemIcon><AllCourses /></ListItemIcon>
           <ListItemText>Dashboard</ListItemText>
+        </ListItem>
+        <ListItem button onClick={() => {
+          props.history.push('/gpa')
+          props.closeDrawer()
+        }}>
+          <ListItemIcon><Grade /></ListItemIcon>
+          <ListItemText>GPA</ListItemText>
         </ListItem>
       </List>
       <Divider />

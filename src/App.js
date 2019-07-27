@@ -11,6 +11,7 @@ import HomeContent from './Containers/HomeContent'
 import * as actions from './store/actions/index'
 import { connect } from 'react-redux'
 import Course from './Containers/Course';
+import Gpa from './Containers/Gpa';
 
 class App extends Component {
   constructor(props) {
@@ -32,6 +33,7 @@ class App extends Component {
           <Route component={Course} path='/courses/:id' />
           <Route component={Dashboard} path='/dashboard/' />
           <Route component={Authenticate} path='/auth/' />
+          <Route component={Gpa} path='/gpa/' />
           <Route exact component={HomeContent} path='/' />
           <Redirect to='/' />
         </Switch>
