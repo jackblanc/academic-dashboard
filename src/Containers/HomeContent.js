@@ -3,7 +3,6 @@ import CodeIcon from '@material-ui/icons/Code';
 import { Button } from '@material-ui/core'
 import EmptyState from '../Components/Layout/EmptyState';
 import { makeStyles } from '@material-ui/styles';
-import * as actions from '../store/actions/actions';
 import { connect } from 'react-redux'
 
 const useStyles = makeStyles(theme => ({
@@ -21,13 +20,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function HomeContent(props) {
-  // Styling
   const classes = useStyles();
-
-  // if (props.isAuthenticated) {
-  //   return (<Redirect to='/courses' />)
-  // }
-
   return (
     <EmptyState
       icon={<CodeIcon className={classes.emptyStateIcon} color="action" />}
@@ -35,7 +28,7 @@ function HomeContent(props) {
       description="A revolutionary tool that allows students to stay on top of their coursework"
       button={
         <Button color='primary' onClick={() => props.history.push('/auth')}>
-          {props.isAuthenticated ? 'Enter Dashboard' : 'Sign In'}
+          {props.isAuthenticated ? 'Continue to Dashboard' : 'Sign In'}
         </Button>
       }
     />
@@ -44,14 +37,8 @@ function HomeContent(props) {
 
 const mapStateToProps = state => {
   return {
-    isAuthenticated: state.main.isAuthenticated
+    isAuthenticated: state.auth.isAuthenticated
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    onTryAutoSignup: () => dispatch(actions.authCheckState())
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(HomeContent)
+export default connect(mapStateToProps)(HomeContent)

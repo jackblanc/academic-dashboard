@@ -1,13 +1,15 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
+import { ListItem, ListItemIcon, ListItemText, Divider, List } from '@material-ui/core'
+import AllCourses from '@material-ui/icons/BorderAll';
+import HomeIcon from '@material-ui/icons/Home'
+import LibraryBooks from '@material-ui/icons/LibraryBooks'
+
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+import * as actions from '../../store/actions/index'
+import { Grade } from '@material-ui/icons';
 
 const useStyles = makeStyles({
   list: {
@@ -18,37 +20,75 @@ const useStyles = makeStyles({
   },
 });
 
-export default function SideDrawer(props) {
+function SideDrawer(props) {
   const classes = useStyles();
 
-  const sideList = side => (
+  const drawerList = []
+  for (const key in props.coursesList) {
+    drawerList.push(
+      <ListItem button onClick={() => {
+        props.history.push('/courses/' + key)
+        props.setSelectedCourse(key)
+        props.closeDrawer()
+      }} key={key}>
+        <ListItemIcon><LibraryBooks /></ListItemIcon>
+        <ListItemText>{key}</ListItemText>
+      </ListItem>
+    )
+  }
+
+  const sideList = (
     <div
       className={classes.list}
       role="presentation"
     >
       <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
+        <ListItem button onClick={() => {
+          props.history.push('/')
+          props.closeDrawer()
+        }}>
+          <ListItemIcon><HomeIcon /></ListItemIcon>
+          <ListItemText>Home</ListItemText>
+        </ListItem>
+        <ListItem button onClick={() => {
+          props.history.push('/dashboard')
+          props.closeDrawer()
+        }}>
+          <ListItemIcon><AllCourses /></ListItemIcon>
+          <ListItemText>Dashboard</ListItemText>
+        </ListItem>
+        <ListItem button onClick={() => {
+          props.history.push('/gpa')
+          props.closeDrawer()
+        }}>
+          <ListItemIcon><Grade /></ListItemIcon>
+          <ListItemText>GPA</ListItemText>
+        </ListItem>
       </List>
       <Divider />
       <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
+        {drawerList}
       </List>
     </div>
   );
 
   return (
     <Drawer open={props.isOpen} onClose={() => props.closeDrawer()}>
-      {sideList('left')}
+      {sideList}
     </Drawer>
   );
 }
+
+const mapStateToProps = state => {
+  return {
+    coursesList: state.data.coursesList
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    setSelectedCourse: (courseID) => dispatch(actions.setSelectedCourse(courseID))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(SideDrawer))

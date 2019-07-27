@@ -10,7 +10,7 @@ import { withStyles } from '@material-ui/core'
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 
-import * as actions from '../store/actions/actions'
+import * as actions from '../store/actions/index'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 
@@ -49,17 +49,16 @@ class Auth extends Component {
   state = {
     email: '',
     password: '',
-    isSignUp: false
+    isSignIn: true
   }
 
   onAlternate = () => {
-    const bool = this.state.isSignUp
-    this.setState({ isSignUp: !bool })
+    const bool = this.state.isSignIn
+    this.setState({ isSignIn: !bool })
   }
 
-  submitHandler = (event) => {
-    event.preventDefault()
-    this.props.onAuth(this.state.email, this.state.password, this.state.isSignUp)
+  submitHandler = () => {
+    this.props.onAuth(this.state.email, this.state.password, this.state.isSignIn)
   }
 
   render() {
@@ -68,14 +67,13 @@ class Auth extends Component {
     let errorMessage = '';
     if (this.props.error) {
       errorMessage = (
-        <Typography className={classes.error}>{this.props.error.message.replace('_', ' ')}</Typography>
+        <Typography className={classes.error}>{this.props.error.replace('_', ' ')}</Typography>
       )
     }
 
     let redirect = null;
-    console.log(this.props.token)
     if (this.props.isAuthenticated) {
-      redirect = <Redirect to='/courses' />
+      redirect = <Redirect to='/dashboard' />
     }
 
     return (
@@ -87,9 +85,9 @@ class Auth extends Component {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            {this.state.isSignUp ? 'Sign Up' : 'Sign In'}
+            {this.state.isSignIn ? 'Sign In' : 'Sign Up'}
           </Typography>
-          <form className={classes.form} noValidate>
+          <form className={classes.form}>
             <TextField
               variant="outlined"
               margin="normal"
@@ -133,16 +131,19 @@ class Auth extends Component {
               variant="contained"
               color="primary"
               className={classes.submit}
-              onClick={this.submitHandler}
+              onClick={(event) => {
+                event.preventDefault()
+                this.props.onAuth(this.state.email, this.state.password, this.state.isSignIn)
+              }}
             >
-              {this.state.isSignUp ? 'Sign Up' : 'Sign In'}
+              {this.state.isSignIn ? 'Sign In' : 'Sign Up'}
             </Button>
             <Grid container>
               <Grid item xs>
               </Grid>
               <Grid item>
                 <Link onClick={this.onAlternate} variant="body2">
-                  {this.state.isSignUp ? "Already have an account? Sign In" : "Don't have an account? Sign Up"}
+                  {this.state.isSignIn ? "Don't have an account? Sign Up" : "Already have an account? Sign In"}
                 </Link>
               </Grid>
             </Grid>
@@ -156,15 +157,14 @@ class Auth extends Component {
 
 const mapStateToProps = state => {
   return {
-    loading: state.main.loading,
-    error: state.main.error,
-    isAuthenticated: state.main.isAuthenticated
+    isAuthenticated: state.auth.isAuthenticated,
+    error: state.auth.error
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAuth: (email, password, isSignup) => dispatch(actions.auth(email, password, isSignup))
+    onAuth: (email, password, isSignIn) => dispatch(actions.authenticate(email, password, isSignIn))
   }
 }
 

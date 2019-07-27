@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Switch, Route, withRouter } from 'react-router-dom'
+import { Switch, Route, withRouter, Redirect } from 'react-router-dom'
 
 import Dashboard from './Containers/Dashboard'
 import Authenticate from './Containers/Auth'
@@ -8,28 +8,34 @@ import Header from './Components/Layout/Header'
 import SideDrawer from './Components/Layout/SideDrawer'
 import HomeContent from './Containers/HomeContent'
 
-import * as actions from './store/actions/actions'
+import * as actions from './store/actions/index'
 import { connect } from 'react-redux'
-import fire from './firebase'
+import Course from './Containers/Course';
+import Gpa from './Containers/Gpa';
 
 class App extends Component {
-  componentDidMount() {
-    // this.props.onTryAutoSignup()
+  constructor(props) {
+    super(props)
+    this.props.tryAutoAuth()
   }
 
   render() {
     let routes =
       <Switch>
         <Route component={Authenticate} path='/auth/' />
-        <Route component={HomeContent} path='/' />
+        <Route exact component={HomeContent} path='/' />
+        <Redirect to='/' />
       </Switch>
 
-    if (fire.auth().currentUser !== null) {
+    if (this.props.isAuthenticated) {
       routes =
         <Switch>
-          <Route component={Dashboard} path='/courses/' />
+          <Route component={Course} path='/courses/:id' />
+          <Route component={Dashboard} path='/dashboard/' />
           <Route component={Authenticate} path='/auth/' />
-          <Route component={HomeContent} path='/' />
+          <Route component={Gpa} path='/gpa/' />
+          <Route exact component={HomeContent} path='/' />
+          <Redirect to='/' />
         </Switch>
     }
 
@@ -48,16 +54,22 @@ class App extends Component {
 
 const mapStateToProps = state => {
   return {
-    isAuth: state.main.token !== null,
-    isDrawerOpen: state.main.isDrawerOpen
+    isDrawerOpen: state.ui.isDrawerOpen,
+    isAuthenticated: state.auth.isAuthenticated
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    onTryAutoSignup: () => dispatch(actions.authCheckState()),
-    closeDrawer: () => dispatch(actions.setDrawer(false))
+    fetchUserData: () => dispatch(actions.fetchUserData()),
+    closeDrawer: () => dispatch(actions.setDrawerState(false)),
+    tryAutoAuth: () => dispatch(actions.tryAutoAuth())
   }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(App));
+
+
+/*
+-
+*/

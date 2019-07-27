@@ -2,13 +2,11 @@ import React from 'react';
 
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import * as actions from '../../store/actions/actions'
+import * as actions from '../../store/actions/index'
 
 import { AppBar, Toolbar, Typography, Button, IconButton } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
 import { makeStyles } from '@material-ui/styles';
-
-import firebase from '../../firebase'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -32,33 +30,35 @@ const header = function SignIn(props) {
       color='inherit'
       onClick={() => props.history.push('/auth')}
     >Sign In</Button>
-
-  console.log(firebase.auth().currentUser)
-  if (firebase.auth().currentUser !== null) {
+  let sideDrawerButton = null
+  if (props.isAuthenticated) {
     accountAccess =
       <Button
         className={classes.button}
         color='inherit'
         onClick={() => props.logout()}
       >Logout</Button>
+    sideDrawerButton = <IconButton edge="start"
+      className={classes.menuButton}
+      color="inherit"
+      aria-label="Menu"
+      onClick={() => {
+        const cur = props.isDrawerOpen
+        props.toggleSideDrawer(cur)
+      }}>
+      <MenuIcon />
+    </IconButton>
   }
+
+  const redirectPath = props.isAuthenticated ? '/dashboard' : '/'
 
   return (
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="Menu"
-            onClick={() => {
-              const cur = props.isDrawerOpen
-              props.toggleSideDrawer(cur)
-            }}>
-            <MenuIcon />
-          </IconButton>
+          {sideDrawerButton}
           <Typography
-            onClick={() => props.history.push('/')}
+            onClick={() => props.history.push(redirectPath)}
             variant='h6'
             className={classes.title}>
             Academic Dashboard
@@ -72,16 +72,15 @@ const header = function SignIn(props) {
 
 const mapStateToProps = state => {
   return {
-    isAuth: state.main.token !== null,
-    token: state.main.token,
-    isDrawerOpen: state.main.isDrawerOpen,
+    isAuthenticated: state.auth.isAuthenticated,
+    isDrawerOpen: state.ui.isDrawerOpen,
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    logout: () => dispatch(actions.logout()),
-    toggleSideDrawer: (current) => dispatch(actions.setDrawer(!current))
+    toggleSideDrawer: (current) => dispatch(actions.setDrawerState(!current)),
+    logout: () => dispatch(actions.logout())
   }
 }
 

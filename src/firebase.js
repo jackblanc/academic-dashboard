@@ -1,6 +1,8 @@
-import firebase from 'firebase'
+import firebase from 'firebase/app'
+import 'firebase/auth'
+import 'firebase/database'
 
-var config = { /* COPY THE ACTUAL CONFIG FROM FIREBASE CONSOLE */
+var config = {
   apiKey: "AIzaSyCYCXB4wt7cz1Zb9rjjHeev0o1RSoNkfAU",
   authDomain: "academic-dashboard.firebaseapp.com",
   databaseURL: "https://academic-dashboard.firebaseio.com",
@@ -8,5 +10,7 @@ var config = { /* COPY THE ACTUAL CONFIG FROM FIREBASE CONSOLE */
   messagingSenderId: "123123123123"
 };
 var fire = firebase.initializeApp(config);
+
+fire.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
 
 export default fire;
