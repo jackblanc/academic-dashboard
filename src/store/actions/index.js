@@ -4,17 +4,13 @@ export {
   setAddCourseDialogState,
   setSelectedCategoryName,
   setAddAssignmentDialogState
-} from './ui'
+} from "./ui";
 
-export {
-  authenticate,
-  logout,
-  tryAutoAuth
-} from './auth'
+export { authenticate, logout, tryAutoAuth } from "./auth";
 
 export {
   fetchUserData,
   addCourse,
   addAssignment,
   removeAssignment
-} from './data'
+} from "./data";

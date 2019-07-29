@@ -1,24 +1,33 @@
-import React, { Component } from 'react'
-import { Table, TableHead, TableRow, TableBody, TableCell } from '@material-ui/core'
+import React, { Component } from "react";
+import {
+  Table,
+  TableHead,
+  TableRow,
+  TableBody,
+  TableCell
+} from "@material-ui/core";
 
-import { connect } from 'react-redux'
-import { convertCategoriesToNumeric } from '../store/util'
+import { connect } from "react-redux";
+import { convertCategoriesToNumeric } from "../store/util";
 
 class Gpa extends Component {
   render() {
-    const courseTableBody = []
+    const courseTableBody = [];
     for (let key in this.props.coursesList) {
-      console.log(key)
-      console.log(this.props.coursesList[key])
-      const course = this.props.coursesList[key]
+      console.log(key);
+      console.log(this.props.coursesList[key]);
+      const course = this.props.coursesList[key];
       courseTableBody.push(
         <TableRow key={key}>
           <TableCell>{course.title}</TableCell>
-          <TableCell>{convertCategoriesToNumeric(course.categories) === 'NaN'
-            ? 'No Data' : (convertCategoriesToNumeric(course.categories) + '%')}</TableCell>
+          <TableCell>
+            {convertCategoriesToNumeric(course.categories) === "NaN"
+              ? "No Data"
+              : convertCategoriesToNumeric(course.categories) + "%"}
+          </TableCell>
           <TableCell>{course.credits}</TableCell>
         </TableRow>
-      )
+      );
     }
     return (
       <div>
@@ -30,25 +39,24 @@ class Gpa extends Component {
               <TableCell># of Credits</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-            {courseTableBody}
-          </TableBody>
+          <TableBody>{courseTableBody}</TableBody>
         </Table>
       </div>
-    )
+    );
   }
 }
 
 const mapStateToProps = state => {
   return {
     coursesList: state.data.coursesList
-  }
-}
+  };
+};
 
 const mapDispatchToProps = dispatch => {
-  return {
+  return {};
+};
 
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Gpa)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Gpa);

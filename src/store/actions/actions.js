@@ -1,123 +1,128 @@
-import * as actionTypes from './actionTypes'
-import axios from '../../axios'
+import * as actionTypes from "./actionTypes";
+import axios from "../../axios";
 
-import firebase from '../../firebase'
+import firebase from "../../firebase";
 
 // AUTHENTICATION ACTIONS
 
 export const authStart = () => {
   return {
     type: actionTypes.AUTH_START
-  }
-}
+  };
+};
 
 export const authSuccess = (idToken, userID) => {
   return {
     type: actionTypes.AUTH_SUCCESS,
     idToken: idToken,
     userID: userID
-  }
-}
+  };
+};
 
-export const authFail = (error) => {
+export const authFail = error => {
   return {
     type: actionTypes.AUTH_FAIL,
     error: error
-  }
-}
+  };
+};
 
 export const logout = () => {
-  localStorage.removeItem('token')
-  localStorage.removeItem('expirationDate')
-  localStorage.removeItem('userID')
-  firebase.auth().signOut()
+  localStorage.removeItem("token");
+  localStorage.removeItem("expirationDate");
+  localStorage.removeItem("userID");
+  firebase.auth().signOut();
   return {
     type: actionTypes.AUTH_LOGOUT
-  }
-}
+  };
+};
 
-export const checkAuthTimeout = (expirationTime) => {
+export const checkAuthTimeout = expirationTime => {
   return dispatch => {
     setTimeout(() => {
-      dispatch(logout())
-    }, expirationTime * 1000)
-  }
-}
+      dispatch(logout());
+    }, expirationTime * 1000);
+  };
+};
 
 export const auth = (email, password, isSignup) => {
   return dispatch => {
     dispatch(authStart());
     if (isSignup) {
-      firebase.auth().createUserWithEmailAndPassword(email, password)
+      firebase.auth().createUserWithEmailAndPassword(email, password);
     } else {
-      firebase.auth().signInWithEmailAndPassword(email, password)
+      firebase.auth().signInWithEmailAndPassword(email, password);
     }
   };
 };
 
 export const authCheckState = () => {
   return dispatch => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
       dispatch(logout());
     } else {
-      const expirationDate = new Date(localStorage.getItem('expirationDate'));
+      const expirationDate = new Date(localStorage.getItem("expirationDate"));
       if (expirationDate > new Date()) {
-        const userId = localStorage.getItem('userId')
-        dispatch(authSuccess(token, userId))
-        dispatch(checkAuthTimeout((expirationDate.getTime() - new Date().getTime()) / 1000))
+        const userId = localStorage.getItem("userId");
+        dispatch(authSuccess(token, userId));
+        dispatch(
+          checkAuthTimeout(
+            (expirationDate.getTime() - new Date().getTime()) / 1000
+          )
+        );
       } else {
-        dispatch(logout())
+        dispatch(logout());
       }
     }
-  }
-}
+  };
+};
 
 // CATEGORY ACTIONS
 
-export const addCategory = (category) => {
+export const addCategory = category => {
   return {
     newCategory: category,
     type: actionTypes.ADD_CATEGORY_TO_COURSE
-  }
-}
+  };
+};
 
-export const removeCategory = (categoryName) => {
+export const removeCategory = categoryName => {
   return {
     categoryName: categoryName,
     type: actionTypes.REMOVE_CATEGORY_FROM_COURSE
-  }
-}
+  };
+};
 
 export const editCategory = (categoryName, newData) => {
   return {
     categoryName: categoryName,
     newData: newData,
     type: actionTypes.EDIT_CATEGORY_IN_COURSE
-  }
-}
+  };
+};
 
-export const courseSelected = (ID) => {
+export const courseSelected = ID => {
   return {
     ID: ID,
     type: actionTypes.COURSE_SELECTED
-  }
-}
+  };
+};
 
 // UI ACTION
-export const setDrawer = (boolean) => {
+export const setDrawer = boolean => {
   return {
     boolean: boolean,
     type: actionTypes.SET_DRAWER
-  }
-}
+  };
+};
 
-// DATA ACTIONS 
+// DATA ACTIONS
 export const fetchUserData = (token, userID) => {
   return dispatch => {
     dispatch(fetchUserDataStart());
-    const queryParams = '?auth=' + token //+ '&orderBy="userID"&equalTo="' + userID + '"';
-    axios.get('/users/' + userID + '.json' + queryParams)
+    const queryParams = "?auth=" + token; //+ '&orderBy="userID"&equalTo="' + userID + '"';
+    axios
+      .get("/users/" + userID + ".json" + queryParams)
       .then(res => {
         const data = [];
         for (let key in res.data) {
@@ -126,65 +131,66 @@ export const fetchUserData = (token, userID) => {
             id: key
           });
         }
-        const mostRecentData = data[data.length - 1]
-        dispatch(fetchUserDataSuccess(mostRecentData))
-        console.log(res)
+        const mostRecentData = data[data.length - 1];
+        dispatch(fetchUserDataSuccess(mostRecentData));
+        console.log(res);
       })
       .catch(err => {
-        console.log(err)
+        console.log(err);
         dispatch(fetchUserDataFail(err));
       });
-  }
-}
+  };
+};
 
-export const fetchUserDataSuccess = (data) => {
+export const fetchUserDataSuccess = data => {
   return {
     type: actionTypes.FETCH_USER_DATA_SUCCESS,
     data: data
-  }
-}
+  };
+};
 
-export const fetchUserDataFail = (error) => {
+export const fetchUserDataFail = error => {
   return {
     type: actionTypes.FETCH_USER_DATA_FAIL,
     error: error
-  }
-}
+  };
+};
 
 export const fetchUserDataStart = () => {
   return {
     type: actionTypes.FETCH_USER_DATA_START
-  }
-}
+  };
+};
 
 export const saveUserData = (token, data, userID) => {
   return dispatch => {
     dispatch(saveUserDataStart());
-    axios.patch('/users/' + userID + '.json?auth=' + token, data)
+    axios
+      .patch("/users/" + userID + ".json?auth=" + token, data)
       .then(res => {
         dispatch(saveUserDataSuccess());
       })
       .catch(err => {
         dispatch(saveUserDataFail(err));
       });
-  }
-}
+  };
+};
 
-export const saveUserDataFail = (error) => {
+export const saveUserDataFail = error => {
   return {
     type: actionTypes.SAVE_USER_DATA_FAIL,
     error: error
-  }
-}
+  };
+};
 
 export const saveUserDataStart = () => {
   return {
     type: actionTypes.SAVE_USER_DATA_START
-  }
-}
+  };
+};
 
 export const saveUserDataSuccess = () => {
   return {
     type: actionTypes.SAVE_USER_DATA_SUCCESS
-  }
-}
+  };
+};

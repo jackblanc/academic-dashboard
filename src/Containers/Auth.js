@@ -1,79 +1,85 @@
-import React, { Component } from 'react';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import { withStyles } from '@material-ui/core'
-import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
+import React, { Component } from "react";
+import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import TextField from "@material-ui/core/TextField";
+import Link from "@material-ui/core/Link";
+import Grid from "@material-ui/core/Grid";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import { withStyles } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
+import Container from "@material-ui/core/Container";
 
-import * as actions from '../store/actions/index'
-import { connect } from 'react-redux'
-import { Redirect } from 'react-router-dom'
+import * as actions from "../store/actions/index";
+import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 
 const styles = theme => {
   return {
-    '@global': {
+    "@global": {
       body: {
-        backgroundColor: theme.palette.common.white,
-      },
+        backgroundColor: theme.palette.common.white
+      }
     },
     paper: {
       marginTop: theme.spacing(8),
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center"
     },
     avatar: {
       margin: theme.spacing(1),
-      backgroundColor: theme.palette.secondary.main,
+      backgroundColor: theme.palette.secondary.main
     },
     form: {
-      width: '100%', // Fix IE 11 issue.
-      marginTop: theme.spacing(1),
+      width: "100%", // Fix IE 11 issue.
+      marginTop: theme.spacing(1)
     },
     submit: {
-      margin: theme.spacing(3, 0, 2),
+      margin: theme.spacing(3, 0, 2)
     },
     error: {
       color: theme.palette.error.main,
       margin: theme.spacing(1)
     }
-  }
-}
+  };
+};
 
 class Auth extends Component {
   state = {
-    email: '',
-    password: '',
+    email: "",
+    password: "",
     isSignIn: true
-  }
+  };
 
   onAlternate = () => {
-    const bool = this.state.isSignIn
-    this.setState({ isSignIn: !bool })
-  }
+    const bool = this.state.isSignIn;
+    this.setState({ isSignIn: !bool });
+  };
 
   submitHandler = () => {
-    this.props.onAuth(this.state.email, this.state.password, this.state.isSignIn)
-  }
+    this.props.onAuth(
+      this.state.email,
+      this.state.password,
+      this.state.isSignIn
+    );
+  };
 
   render() {
-    const { classes } = this.props
+    const { classes } = this.props;
 
-    let errorMessage = '';
+    let errorMessage = "";
     if (this.props.error) {
       errorMessage = (
-        <Typography className={classes.error}>{this.props.error.replace('_', ' ')}</Typography>
-      )
+        <Typography className={classes.error}>
+          {this.props.error.replace("_", " ")}
+        </Typography>
+      );
     }
 
     let redirect = null;
     if (this.props.isAuthenticated) {
-      redirect = <Redirect to='/dashboard' />
+      redirect = <Redirect to="/dashboard" />;
     }
 
     return (
@@ -85,7 +91,7 @@ class Auth extends Component {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            {this.state.isSignIn ? 'Sign In' : 'Sign Up'}
+            {this.state.isSignIn ? "Sign In" : "Sign Up"}
           </Typography>
           <form className={classes.form}>
             <TextField
@@ -99,11 +105,11 @@ class Auth extends Component {
               autoComplete="email"
               autoFocus
               value={this.state.email}
-              onChange={(event) => {
+              onChange={event => {
                 this.setState({
                   ...this.state,
                   email: event.target.value
-                })
+                });
               }}
             />
             <TextField
@@ -117,11 +123,11 @@ class Auth extends Component {
               id="password"
               autoComplete="current-password"
               value={this.state.password}
-              onChange={(event) => {
+              onChange={event => {
                 this.setState({
                   ...this.state,
                   password: event.target.value
-                })
+                });
               }}
             />
             {errorMessage}
@@ -131,41 +137,49 @@ class Auth extends Component {
               variant="contained"
               color="primary"
               className={classes.submit}
-              onClick={(event) => {
-                event.preventDefault()
-                this.props.onAuth(this.state.email, this.state.password, this.state.isSignIn)
+              onClick={event => {
+                event.preventDefault();
+                this.props.onAuth(
+                  this.state.email,
+                  this.state.password,
+                  this.state.isSignIn
+                );
               }}
             >
-              {this.state.isSignIn ? 'Sign In' : 'Sign Up'}
+              {this.state.isSignIn ? "Sign In" : "Sign Up"}
             </Button>
             <Grid container>
-              <Grid item xs>
-              </Grid>
+              <Grid item xs />
               <Grid item>
                 <Link onClick={this.onAlternate} variant="body2">
-                  {this.state.isSignIn ? "Don't have an account? Sign Up" : "Already have an account? Sign In"}
+                  {this.state.isSignIn
+                    ? "Don't have an account? Sign Up"
+                    : "Already have an account? Sign In"}
                 </Link>
               </Grid>
             </Grid>
           </form>
         </div>
       </Container>
-    )
+    );
   }
 }
-
 
 const mapStateToProps = state => {
   return {
     isAuthenticated: state.auth.isAuthenticated,
     error: state.auth.error
-  }
-}
+  };
+};
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAuth: (email, password, isSignIn) => dispatch(actions.authenticate(email, password, isSignIn))
-  }
-}
+    onAuth: (email, password, isSignIn) =>
+      dispatch(actions.authenticate(email, password, isSignIn))
+  };
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(Auth))
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles, { withTheme: true })(Auth));

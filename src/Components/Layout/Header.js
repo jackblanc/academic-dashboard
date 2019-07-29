@@ -1,56 +1,71 @@
-import React from 'react';
+import React from "react";
 
-import { withRouter } from 'react-router-dom'
-import { connect } from 'react-redux'
-import * as actions from '../../store/actions/index'
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import * as actions from "../../store/actions/index";
 
-import { AppBar, Toolbar, Typography, Button, IconButton } from '@material-ui/core'
-import MenuIcon from '@material-ui/icons/Menu'
-import { makeStyles } from '@material-ui/styles';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  IconButton
+} from "@material-ui/core";
+import MenuIcon from "@material-ui/icons/Menu";
+import { makeStyles } from "@material-ui/styles";
 
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1
   },
   menuButton: {
-    marginRight: theme.spacing(2),
+    marginRight: theme.spacing(2)
   },
   title: {
-    flexGrow: 1,
-  },
-}))
+    flexGrow: 1
+  }
+}));
 
 const header = function SignIn(props) {
+  const classes = useStyles();
 
-  const classes = useStyles()
-
-  let accountAccess =
+  let accountAccess = (
     <Button
       className={classes.button}
-      color='inherit'
-      onClick={() => props.history.push('/auth')}
-    >Sign In</Button>
-  let sideDrawerButton = null
+      color="inherit"
+      onClick={() => props.history.push("/auth")}
+    >
+      Sign In
+    </Button>
+  );
+  let sideDrawerButton = null;
   if (props.isAuthenticated) {
-    accountAccess =
+    accountAccess = (
       <Button
         className={classes.button}
-        color='inherit'
+        color="inherit"
         onClick={() => props.logout()}
-      >Logout</Button>
-    sideDrawerButton = <IconButton edge="start"
-      className={classes.menuButton}
-      color="inherit"
-      aria-label="Menu"
-      onClick={() => {
-        const cur = props.isDrawerOpen
-        props.toggleSideDrawer(cur)
-      }}>
-      <MenuIcon />
-    </IconButton>
+      >
+        Logout
+      </Button>
+    );
+    sideDrawerButton = (
+      <IconButton
+        edge="start"
+        className={classes.menuButton}
+        color="inherit"
+        aria-label="Menu"
+        onClick={() => {
+          const cur = props.isDrawerOpen;
+          props.toggleSideDrawer(cur);
+        }}
+      >
+        <MenuIcon />
+      </IconButton>
+    );
   }
 
-  const redirectPath = props.isAuthenticated ? '/dashboard' : '/'
+  const redirectPath = props.isAuthenticated ? "/dashboard" : "/";
 
   return (
     <div className={classes.root}>
@@ -59,8 +74,9 @@ const header = function SignIn(props) {
           {sideDrawerButton}
           <Typography
             onClick={() => props.history.push(redirectPath)}
-            variant='h6'
-            className={classes.title}>
+            variant="h6"
+            className={classes.title}
+          >
             Academic Dashboard
           </Typography>
           {accountAccess}
@@ -68,20 +84,23 @@ const header = function SignIn(props) {
       </AppBar>
     </div>
   );
-}
+};
 
 const mapStateToProps = state => {
   return {
     isAuthenticated: state.auth.isAuthenticated,
-    isDrawerOpen: state.ui.isDrawerOpen,
-  }
-}
+    isDrawerOpen: state.ui.isDrawerOpen
+  };
+};
 
 const mapDispatchToProps = dispatch => {
   return {
-    toggleSideDrawer: (current) => dispatch(actions.setDrawerState(!current)),
+    toggleSideDrawer: current => dispatch(actions.setDrawerState(!current)),
     logout: () => dispatch(actions.logout())
-  }
-}
+  };
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(header));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(header));

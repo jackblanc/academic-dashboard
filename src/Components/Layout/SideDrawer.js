@@ -1,74 +1,96 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import { ListItem, ListItemIcon, ListItemText, Divider, List } from '@material-ui/core'
-import AllCourses from '@material-ui/icons/BorderAll';
-import HomeIcon from '@material-ui/icons/Home'
-import LibraryBooks from '@material-ui/icons/LibraryBooks'
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Drawer from "@material-ui/core/Drawer";
+import {
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Divider,
+  List
+} from "@material-ui/core";
+import AllCourses from "@material-ui/icons/BorderAll";
+import HomeIcon from "@material-ui/icons/Home";
+import LibraryBooks from "@material-ui/icons/LibraryBooks";
 
-import { withRouter } from 'react-router-dom'
-import { connect } from 'react-redux'
-import * as actions from '../../store/actions/index'
-import { Grade } from '@material-ui/icons';
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import * as actions from "../../store/actions/index";
+import { Grade } from "@material-ui/icons";
 
 const useStyles = makeStyles({
   list: {
-    width: 250,
+    width: 250
   },
   fullList: {
-    width: 'auto',
-  },
+    width: "auto"
+  }
 });
 
 function SideDrawer(props) {
   const classes = useStyles();
 
-  const drawerList = []
+  const drawerList = [];
   for (const key in props.coursesList) {
     drawerList.push(
-      <ListItem button onClick={() => {
-        props.history.push('/courses/' + key)
-        props.setSelectedCourse(key)
-        props.closeDrawer()
-      }} key={key}>
-        <ListItemIcon><LibraryBooks /></ListItemIcon>
+      <ListItem
+        button
+        onClick={() => {
+          props.history.push("/courses/" + key);
+          props.setSelectedCourse(key);
+          props.closeDrawer();
+        }}
+        key={key}
+      >
+        <ListItemIcon>
+          <LibraryBooks />
+        </ListItemIcon>
         <ListItemText>{key}</ListItemText>
       </ListItem>
-    )
+    );
   }
 
   const sideList = (
-    <div
-      className={classes.list}
-      role="presentation"
-    >
+    <div className={classes.list} role="presentation">
       <List>
-        <ListItem button onClick={() => {
-          props.history.push('/')
-          props.closeDrawer()
-        }}>
-          <ListItemIcon><HomeIcon /></ListItemIcon>
+        <ListItem
+          button
+          onClick={() => {
+            props.history.push("/");
+            props.closeDrawer();
+          }}
+        >
+          <ListItemIcon>
+            <HomeIcon />
+          </ListItemIcon>
           <ListItemText>Home</ListItemText>
         </ListItem>
-        <ListItem button onClick={() => {
-          props.history.push('/dashboard')
-          props.closeDrawer()
-        }}>
-          <ListItemIcon><AllCourses /></ListItemIcon>
+        <ListItem
+          button
+          onClick={() => {
+            props.history.push("/dashboard");
+            props.closeDrawer();
+          }}
+        >
+          <ListItemIcon>
+            <AllCourses />
+          </ListItemIcon>
           <ListItemText>Dashboard</ListItemText>
         </ListItem>
-        <ListItem button onClick={() => {
-          props.history.push('/gpa')
-          props.closeDrawer()
-        }}>
-          <ListItemIcon><Grade /></ListItemIcon>
+        <ListItem
+          button
+          onClick={() => {
+            props.history.push("/gpa");
+            props.closeDrawer();
+          }}
+        >
+          <ListItemIcon>
+            <Grade />
+          </ListItemIcon>
           <ListItemText>GPA</ListItemText>
         </ListItem>
       </List>
       <Divider />
-      <List>
-        {drawerList}
-      </List>
+      <List>{drawerList}</List>
     </div>
   );
 
@@ -82,13 +104,16 @@ function SideDrawer(props) {
 const mapStateToProps = state => {
   return {
     coursesList: state.data.coursesList
-  }
-}
+  };
+};
 
 const mapDispatchToProps = dispatch => {
   return {
-    setSelectedCourse: (courseID) => dispatch(actions.setSelectedCourse(courseID))
-  }
-}
+    setSelectedCourse: courseID => dispatch(actions.setSelectedCourse(courseID))
+  };
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(SideDrawer))
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(SideDrawer));
