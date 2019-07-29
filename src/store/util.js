@@ -5,6 +5,8 @@ export const updateObject = (oldObject, updatedProperties) => {
   };
 };
 
+export const convertCourseToQualityPoints
+
 export const convertCategoriesToNumeric = categories => {
   let numerator = 0;
   let denominator = 0;
@@ -26,9 +28,9 @@ export const convertAssignmentsToPercent = assignments => {
   let sum = 0;
   let count = 0;
   for (const asg in assignments) {
-    const asgRawScore = assignments[asg];
-    // eslint-disable-next-line
-    sum += eval(asgRawScore);
+    const asgRawScore =
+      assignments[asg].pointsEarned / assignments[asg].pointsPossible;
+    sum += asgRawScore;
     count += 1;
   }
   let value = (sum / count) * 100;

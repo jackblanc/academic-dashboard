@@ -26,7 +26,8 @@ const styles = theme => {
 class AddCourse extends Component {
   state = {
     assignmentName: "",
-    assignmentScore: "",
+    pointsEarned: "",
+    pointsPossible: "",
     error: null
   };
 
@@ -62,16 +63,31 @@ class AddCourse extends Component {
           />
           <TextField
             margin="dense"
-            id="ID"
-            label="Assignment Score (as a fraction, points earned/points possible)"
+            id="pointsEarned"
+            label="Points Earned"
             type="text"
             fullWidth
             autoComplete="off"
-            value={this.state.assignmentScore}
+            value={this.state.pointsEarned}
             onChange={event => {
               this.setState({
                 ...this.state,
-                assignmentScore: event.target.value
+                pointsEarned: event.target.value
+              });
+            }}
+          />
+          <TextField
+            margin="dense"
+            id="pointsPossible"
+            label="Points Possible"
+            type="text"
+            fullWidth
+            autoComplete="off"
+            value={this.state.pointsPossible}
+            onChange={event => {
+              this.setState({
+                ...this.state,
+                pointsPossible: event.target.value
               });
             }}
           />
@@ -98,10 +114,15 @@ class AddCourse extends Component {
   }
 
   submitHandler = () => {
-    if (this.state.assignmentName !== "" && this.state.assignmentScore !== "") {
+    if (
+      this.state.assignmentName !== "" &&
+      this.state.pointsEarned !== "" &&
+      this.state.pointsPossible !== ""
+    ) {
       this.props.addAssignment(
         this.state.assignmentName,
-        this.state.assignmentScore,
+        this.state.pointsEarned,
+        this.state.pointsPossible,
         this.props.courseID,
         this.props.categoryName
       );
@@ -125,11 +146,18 @@ const mapDispatchToProps = dispatch => {
   return {
     setAddAssignmentDialogState: boolean =>
       dispatch(actions.setAddAssignmentDialogState(boolean)),
-    addAssignment: (assignmentName, assignmentScore, courseID, categoryName) =>
+    addAssignment: (
+      assignmentName,
+      pointsEarned,
+      pointsPossible,
+      courseID,
+      categoryName
+    ) =>
       dispatch(
         actions.addAssignment(
           assignmentName,
-          assignmentScore,
+          pointsEarned,
+          pointsPossible,
           courseID,
           categoryName
         )

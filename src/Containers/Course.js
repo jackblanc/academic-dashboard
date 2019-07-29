@@ -60,7 +60,11 @@ class Course extends Component {
           assignmentRows.push(
             <TableRow key={assignmentName}>
               <TableCell>{assignmentName}</TableCell>
-              <TableCell>{category.assignments[assignmentName]}</TableCell>
+              <TableCell>
+                {category.assignments[assignmentName].pointsEarned}/
+                {category.assignments[assignmentName].pointsPossible},{" "}
+                {convertAssignmentsToPercent(category.assignments)}%
+              </TableCell>
               <TableCell>
                 <Button
                   onClick={() => {
@@ -107,15 +111,17 @@ class Course extends Component {
                   </TableHead>
                   <TableBody>
                     {assignmentRows}
-                    <TableCell colSpan={3}>
-                      <Button
-                        onClick={() =>
-                          this.props.setAddAssignmentDialogState(true)
-                        }
-                      >
-                        Add an Assignment
-                      </Button>
-                    </TableCell>
+                    <TableRow>
+                      <TableCell colSpan={3}>
+                        <Button
+                          onClick={() =>
+                            this.props.setAddAssignmentDialogState(true)
+                          }
+                        >
+                          Add an Assignment
+                        </Button>
+                      </TableCell>
+                    </TableRow>
                   </TableBody>
                 </Table>
               </TableCell>
