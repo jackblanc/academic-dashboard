@@ -30,6 +30,7 @@ export const convertNumericGradeToGPA = numericGrade => {
   }
 };
 
+// TODO: This doesn't work. Write tests and figure it out.
 export const calculateGPA = courses => {
   let sumQualityPoints = 0;
   let sumCredits = 0;

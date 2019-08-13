@@ -1,3 +1,5 @@
+// TODO implement validation using redux
+
 import React, { Component } from "react";
 
 import {
