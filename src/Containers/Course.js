@@ -12,7 +12,8 @@ import {
 } from "@material-ui/core";
 import {
   convertAssignmentsToPercent,
-  convertCategoriesToNumeric
+  convertCategoriesToNumeric,
+  percentageSignUtil
 } from "../store/util";
 import * as actions from "../store/actions/index";
 import AddAssignment from "../Components/AddAssignment";
@@ -62,8 +63,7 @@ class Course extends Component {
               <TableCell>{assignmentName}</TableCell>
               <TableCell>
                 {category.assignments[assignmentName].pointsEarned}/
-                {category.assignments[assignmentName].pointsPossible},{" "}
-                {convertAssignmentsToPercent(category.assignments)}%
+                {category.assignments[assignmentName].pointsPossible}
               </TableCell>
               <TableCell>
                 <Button
@@ -82,19 +82,19 @@ class Course extends Component {
           );
         }
       }
-      const categoryValue = convertAssignmentsToPercent(category.assignments);
-      const displayValue =
-        categoryValue === "NaN" ? "No Data" : categoryValue + "%";
+      const categoryValue = percentageSignUtil(
+        convertAssignmentsToPercent(category.assignments)
+      );
       categoryRows.push(
         <Fragment key={category.name}>
           <TableRow>
             <TableCell>{category.name}</TableCell>
-            <TableCell>{category.weight}</TableCell>
+            <TableCell>{percentageSignUtil(category.weight)}</TableCell>
             <TableCell>
               <Button
                 onClick={() => this.props.setSelectedCategory(category.name)}
               >
-                {displayValue}
+                {categoryValue}
               </Button>
             </TableCell>
           </TableRow>
@@ -134,8 +134,7 @@ class Course extends Component {
     const numericGrade = convertCategoriesToNumeric(
       this.props.coursesList[this.props.selectedCourseID].categories
     );
-    const displayGrade =
-      numericGrade === "NaN" ? "No Grade Data" : numericGrade + "%";
+    const displayGrade = percentageSignUtil(numericGrade);
     return (
       <div className={classes.paper}>
         {addAssignmentDialog}

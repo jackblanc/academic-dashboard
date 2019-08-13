@@ -15,7 +15,7 @@ import {
 } from "@material-ui/core";
 import { AddCircle } from "@material-ui/icons";
 
-import { convertCategoriesToNumeric } from "../store/util";
+import { convertCategoriesToNumeric, percentageSignUtil } from "../store/util";
 import AddCourse from "../Components/AddCourse";
 
 const styles = theme => {
@@ -66,9 +66,9 @@ class Dashboard extends Component {
         ...this.props.coursesList[courseID],
         courseID
       };
-      const numericGrade = convertCategoriesToNumeric(data.categories);
-      const displayGrade =
-        numericGrade === "NaN" ? "No Grade Data" : numericGrade + "%";
+      const displayGrade = percentageSignUtil(
+        convertCategoriesToNumeric(data.categories)
+      );
       courseNotecards.push(
         <Grid item xs key={courseID}>
           <Card className={classes.notecard}>
