@@ -16,6 +16,8 @@ import {
   percentageSignUtil
 } from "../store/util";
 
+// TODO NaN with no courses
+
 const styles = theme => {
   return {
     "@global": {

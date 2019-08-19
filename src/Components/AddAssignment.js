@@ -1,7 +1,4 @@
-// TODO implement validation using redux
-
-import React, { Component } from "react";
-
+import React, { Component, Fragment } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -11,10 +8,17 @@ import {
   DialogActions,
   Button,
   withStyles,
-  Typography
+  Checkbox,
+  FormControlLabel,
+  Box
 } from "@material-ui/core";
-
 import { connect } from "react-redux";
+import DateFnsUtils from "@date-io/date-fns";
+import {
+  KeyboardDatePicker,
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker
+} from "@material-ui/pickers";
 import * as actions from "../store/actions/index";
 
 const styles = theme => {
@@ -30,19 +34,21 @@ class AddCourse extends Component {
     assignmentName: "",
     pointsEarned: "",
     pointsPossible: "",
-    error: null
+    assignmentComplete: false,
+    assignmentSubmitted: false,
+    assignmentGraded: false,
+    dueDate: new Date()
   };
 
   render() {
-    const { classes } = this.props;
-
     return (
       <Dialog
         open={this.props.showAddAssignmentDialog}
         onClose={() => this.props.setAddAssignmentDialogState(false)}
+        maxWidth={"lg"}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Add a Course</DialogTitle>
+        <DialogTitle id="form-dialog-title">Add an Assignment</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Enter the following data to add a new assignment to this category.
@@ -62,38 +68,127 @@ class AddCourse extends Component {
                 assignmentName: event.target.value
               });
             }}
+            error={this.props.error.assignmentNameError !== null}
+            helperText={this.props.error.assignmentNameError}
           />
-          <TextField
-            margin="dense"
-            id="pointsEarned"
-            label="Points Earned"
-            type="text"
-            fullWidth
-            autoComplete="off"
-            value={this.state.pointsEarned}
-            onChange={event => {
-              this.setState({
-                ...this.state,
-                pointsEarned: event.target.value
-              });
-            }}
-          />
-          <TextField
-            margin="dense"
-            id="pointsPossible"
-            label="Points Possible"
-            type="text"
-            fullWidth
-            autoComplete="off"
-            value={this.state.pointsPossible}
-            onChange={event => {
-              this.setState({
-                ...this.state,
-                pointsPossible: event.target.value
-              });
-            }}
-          />
-          <Typography className={classes.error}>{this.state.error}</Typography>
+          <Box>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={this.state.assignmentComplete}
+                  onChange={event => {
+                    this.setState({
+                      assignmentComplete: event.target.checked
+                    });
+                  }}
+                  value="assignmentComplete"
+                  color="primary"
+                />
+              }
+              label="Assignment Complete"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={this.state.assignmentSubmitted}
+                  onChange={event => {
+                    this.setState({
+                      assignmentSubmitted: event.target.checked
+                    });
+                  }}
+                  value="assignmentSubmitted"
+                  color="primary"
+                />
+              }
+              label="Assignment Submitted"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={this.state.assignmentGraded}
+                  onChange={event => {
+                    this.setState({
+                      assignmentGraded: event.target.checked
+                    });
+                  }}
+                  value="assignmentGraded"
+                  color="primary"
+                />
+              }
+              label="Assignment Graded"
+            />
+          </Box>
+          {!this.state.assignmentSubmitted && (
+            <Box>
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <KeyboardDatePicker
+                  disableToolbar
+                  variant="inline"
+                  format="MM/dd/yyyy"
+                  margin="normal"
+                  id="date-picker-inline"
+                  label="Due Date"
+                  value={this.state.dueDate}
+                  onChange={date => {
+                    this.setState({ dueDate: date });
+                  }}
+                  KeyboardButtonProps={{
+                    "aria-label": "change date"
+                  }}
+                />
+                <KeyboardTimePicker
+                  margin="normal"
+                  id="time-picker"
+                  label="Due Time"
+                  value={this.state.dueDate}
+                  onChange={date => {
+                    this.setState({ dueDate: date });
+                  }}
+                  KeyboardButtonProps={{
+                    "aria-label": "change time"
+                  }}
+                />
+              </MuiPickersUtilsProvider>
+            </Box>
+          )}
+          {this.state.assignmentGraded && (
+            <Fragment>
+              <TextField
+                margin="dense"
+                id="pointsEarned"
+                label="Points Earned"
+                type="text"
+                fullWidth
+                autoComplete="off"
+                value={this.state.pointsEarned}
+                onChange={event => {
+                  this.setState({
+                    ...this.state,
+                    pointsEarned: event.target.value
+                  });
+                }}
+                error={this.props.error.pointsEarnedError !== null}
+                helperText={this.props.error.pointsEarnedError}
+              />
+              <TextField
+                margin="dense"
+                id="pointsPossible"
+                label="Points Possible"
+                type="text"
+                fullWidth
+                autoComplete="off"
+                value={this.state.pointsPossible}
+                onChange={event => {
+                  this.setState({
+                    ...this.state,
+                    pointsPossible: event.target.value
+                  });
+                }}
+                error={this.props.error.pointsPossibleError !== null}
+                helperText={this.props.error.pointsPossibleError}
+              />
+            </Fragment>
+          )}
         </DialogContent>
         <DialogActions>
           <Button
@@ -116,23 +211,17 @@ class AddCourse extends Component {
   }
 
   submitHandler = () => {
-    if (
-      this.state.assignmentName !== "" &&
-      this.state.pointsEarned !== "" &&
-      this.state.pointsPossible !== ""
-    ) {
-      this.props.addAssignment(
-        this.state.assignmentName,
-        this.state.pointsEarned,
-        this.state.pointsPossible,
-        this.props.courseID,
-        this.props.categoryName
-      );
-      this.props.setAddAssignmentDialogState(false);
-      this.setState({ error: null });
-    } else {
-      this.setState({ error: "Error! Inputs cannot be empty" });
-    }
+    this.props.addAssignment(
+      this.state.assignmentName,
+      this.state.pointsEarned,
+      this.state.pointsPossible,
+      this.state.dueDate,
+      this.state.assignmentComplete,
+      this.state.assignmentSubmitted,
+      this.state.assignmentGraded,
+      this.props.courseID,
+      this.props.categoryName
+    );
   };
 }
 
@@ -140,7 +229,8 @@ const mapStateToProps = state => {
   return {
     showAddAssignmentDialog: state.ui.showAddAssignmentDialog,
     courseID: state.ui.selectedCourseID,
-    categoryName: state.ui.selectedCategoryName
+    categoryName: state.ui.selectedCategoryName,
+    error: state.data.addAssignmentError
   };
 };
 
@@ -152,6 +242,10 @@ const mapDispatchToProps = dispatch => {
       assignmentName,
       pointsEarned,
       pointsPossible,
+      dueDate,
+      assignmentComplete,
+      assignmentSubmitted,
+      assignmentGraded,
       courseID,
       categoryName
     ) =>
@@ -160,6 +254,10 @@ const mapDispatchToProps = dispatch => {
           assignmentName,
           pointsEarned,
           pointsPossible,
+          dueDate,
+          assignmentComplete,
+          assignmentSubmitted,
+          assignmentGraded,
           courseID,
           categoryName
         )

@@ -30,7 +30,6 @@ export const convertNumericGradeToGPA = numericGrade => {
   }
 };
 
-// TODO: This doesn't work. Write tests and figure it out.
 export const calculateGPA = courses => {
   let sumQualityPoints = 0;
   let sumCredits = 0;
@@ -39,9 +38,10 @@ export const calculateGPA = courses => {
     const qualityPoints =
       convertNumericGradeToGPA(convertCategoriesToNumeric(course.categories)) *
       course.credits;
-    if (!isNaN(qualityPoints)) {
+    const credits = Number(course.credits);
+    if (!isNaN(qualityPoints) && !isNaN(credits)) {
       sumQualityPoints += qualityPoints;
-      sumCredits += course.credits;
+      sumCredits += credits;
     }
   }
   return sumQualityPoints / sumCredits;
@@ -71,11 +71,14 @@ export const convertAssignmentsToPercent = assignments => {
   let sum = 0;
   let count = 0;
   for (const asg in assignments) {
-    const asgRawScore =
-      assignments[asg].pointsEarned / assignments[asg].pointsPossible;
-    sum += asgRawScore;
-    count += 1;
+    if (assignments[asg].pointsPossible !== "Assignment not graded") {
+      const asgRawScore =
+        assignments[asg].pointsEarned / assignments[asg].pointsPossible;
+      sum += asgRawScore;
+      count += 1;
+    }
   }
+
   let value = (sum / count) * 100;
   if (isNaN(value)) {
     return "No Assignment Data";
@@ -88,6 +91,6 @@ export const percentageSignUtil = data => {
   if (isNaN(data)) {
     return data;
   } else {
-    return data + "%";
+    return data.toFixed(2) + "%";
   }
 };

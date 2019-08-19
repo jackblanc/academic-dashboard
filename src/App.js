@@ -13,6 +13,8 @@ import { connect } from "react-redux";
 import Course from "./Containers/Course";
 import Gpa from "./Containers/Gpa";
 
+// TODO make to-do list container
+
 class App extends Component {
   constructor(props) {
     super(props);

@@ -38,6 +38,8 @@ const styles = theme => {
   };
 };
 
+// TODO add due dates, make null values render better
+// TODO add the ability to edit scores (or enter them if none given)
 class Course extends Component {
   render() {
     const { classes } = this.props;
@@ -58,13 +60,25 @@ class Course extends Component {
       const assignmentRows = [];
       if (this.props.selectedCategoryName) {
         for (const assignmentName in category.assignments) {
+          const displayGrade =
+            category.assignments[assignmentName].pointsEarned !==
+            "Assignment not graded" ? (
+              <Typography>
+                {category.assignments[assignmentName].pointsEarned}/
+                {category.assignments[assignmentName].pointsPossible}
+              </Typography>
+            ) : (
+              "Enter grade"
+            );
           assignmentRows.push(
             <TableRow key={assignmentName}>
               <TableCell>{assignmentName}</TableCell>
               <TableCell>
-                {category.assignments[assignmentName].pointsEarned}/
-                {category.assignments[assignmentName].pointsPossible}
+                {category.assignments[assignmentName].dueDate === undefined
+                  ? "Enter a due date"
+                  : category.assignments[assignmentName].dueDate}
               </TableCell>
+              <TableCell>{displayGrade}</TableCell>
               <TableCell>
                 <Button
                   onClick={() => {
@@ -105,8 +119,9 @@ class Course extends Component {
                   <TableHead>
                     <TableRow>
                       <TableCell>Assignment Name</TableCell>
+                      <TableCell>Due Date</TableCell>
                       <TableCell>Score</TableCell>
-                      <TableCell>Actions</TableCell>
+                      <TableCell>Delete</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -148,7 +163,7 @@ class Course extends Component {
           <TableHead className={classes.tableHead}>
             <TableRow>
               <TableCell>Category Name</TableCell>
-              <TableCell>% of Final Grade</TableCell>
+              <TableCell>Category Weight</TableCell>
               <TableCell>Category Value</TableCell>
             </TableRow>
           </TableHead>

@@ -2,7 +2,8 @@ import {
   convertCategoriesToNumeric,
   convertAssignmentsToPercent,
   convertNumericGradeToGPA,
-  percentageSignUtil
+  percentageSignUtil,
+  calculateGPA
 } from "./util";
 
 describe("Testing utility functions", () => {
@@ -67,7 +68,62 @@ describe("Testing utility functions", () => {
   });
 
   it("handles adding a percentage properly", () => {
-    expect(percentageSignUtil(20)).toBe("20%");
+    expect(percentageSignUtil(20)).toBe("20.00%");
     expect(percentageSignUtil("No Grade Data")).toBe("No Grade Data");
+  });
+
+  it("properly calculates overall GPA", () => {
+    const courseData = {
+      CS5800: {
+        categories: {
+          "Final Exam": {
+            assignments: {
+              "Final Exam": {
+                pointsEarned: "20",
+                pointsPossible: "25"
+              }
+            },
+            weight: 50
+          },
+          Midterm: {
+            assignments: {
+              Midterm: {
+                pointsEarned: "80",
+                pointsPossible: "100"
+              }
+            },
+            weight: 50
+          }
+        },
+        credits: "4",
+        title: "Algorithms"
+      },
+      MATH1342: {
+        categories: {
+          "Final Exam": {
+            weight: 20
+          },
+          "Midterm Exam 1": {
+            weight: 20
+          },
+          "Midterm Exam 2": {
+            weight: 20
+          },
+          Quizzes: {
+            assignments: {
+              "Quiz 1": {
+                pointsEarned: "7",
+                pointsPossible: "10"
+              }
+            },
+            weight: 40
+          }
+        },
+        credits: "4",
+        title: "Calculus 2"
+      }
+    };
+
+    expect(calculateGPA(courseData).toFixed(2)).toEqual("2.17");
   });
 });

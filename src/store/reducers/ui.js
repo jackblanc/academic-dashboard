@@ -5,9 +5,9 @@ import { updateObject } from "../util";
 const initialState = {
   isDrawerOpen: false,
   showAddCourseDialog: false,
+  showAddAssignmentDialog: false,
   selectedCourseID: null,
-  selectedCategoryName: null,
-  showAddAssignmentDialog: false
+  selectedCategoryName: null
 };
 
 export default (state = initialState, action) => {
