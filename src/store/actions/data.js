@@ -97,6 +97,7 @@ export const addAssignmentSuccess = (
   courseID,
   categoryName
 ) => dispatch => {
+  console.log(dueDate);
   firebase
     .database()
     .ref("/users/")
@@ -132,7 +133,7 @@ export const addAssignmentSuccess = (
     .child("/assignments/")
     .child(assignmentName)
     .child("/dueDate/")
-    .set(dueDate);
+    .set(dueDate.toISOString());
   firebase
     .database()
     .ref("/users/")
@@ -144,7 +145,7 @@ export const addAssignmentSuccess = (
     .child("/assignments/")
     .child(assignmentName)
     .child("/dateCreated/")
-    .set(new Date());
+    .set(new Date().toISOString());
   dispatch({
     type: types.ADD_ASSIGNMENT_SUCCESS
   });

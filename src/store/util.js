@@ -24,6 +24,7 @@ export const convertNumericGradeToGPA = numericGrade => {
 
   for (const key in defaultBreakdowns) {
     const obj = defaultBreakdowns[key];
+    console.log(numericGrade);
     if (numericGrade >= obj.minGrade) {
       return obj.gpa;
     }
@@ -44,6 +45,9 @@ export const calculateGPA = courses => {
       sumCredits += credits;
     }
   }
+  if (sumQualityPoints === 0 && sumCredits === 0) {
+    return "No Course Data";
+  }
   return sumQualityPoints / sumCredits;
 };
 
@@ -53,10 +57,13 @@ export const convertCategoriesToNumeric = categories => {
   for (const key in categories) {
     const category = categories[key];
     if (category.assignments) {
-      numerator +=
-        (convertAssignmentsToPercent(category.assignments) / 100) *
-        category.weight;
-      denominator += category.weight;
+      const percentage = convertAssignmentsToPercent(category.assignments);
+      if (percentage !== "No Assignment Data") {
+        numerator +=
+          (convertAssignmentsToPercent(category.assignments) / 100) *
+          category.weight;
+        denominator += category.weight;
+      }
     }
   }
   let ans = (numerator / denominator) * 100;

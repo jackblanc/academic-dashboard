@@ -16,8 +16,6 @@ import {
   percentageSignUtil
 } from "../store/util";
 
-// TODO NaN with no courses
-
 const styles = theme => {
   return {
     "@global": {
@@ -67,7 +65,9 @@ class Gpa extends Component {
         </Typography>
         <Typography variant="h4" className={classes.title}>
           Current Semester GPA:{" "}
-          {calculateGPA(this.props.coursesList).toFixed(2)}
+          {isNaN(calculateGPA(this.props.coursesList))
+            ? calculateGPA(this.props.coursesList)
+            : calculateGPA(this.props.coursesList).toFixed(2)}
         </Typography>
         <Table>
           <TableHead>

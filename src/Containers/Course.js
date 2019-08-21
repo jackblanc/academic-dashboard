@@ -76,7 +76,9 @@ class Course extends Component {
               <TableCell>
                 {category.assignments[assignmentName].dueDate === undefined
                   ? "Enter a due date"
-                  : category.assignments[assignmentName].dueDate}
+                  : new Date(
+                      category.assignments[assignmentName].dueDate
+                    ).toLocaleString()}
               </TableCell>
               <TableCell>{displayGrade}</TableCell>
               <TableCell>
