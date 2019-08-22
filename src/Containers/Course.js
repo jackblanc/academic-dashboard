@@ -41,80 +41,89 @@ const styles = theme => {
 // TODO add due dates, make null values render better
 // TODO add the ability to edit scores (or enter them if none given)
 class Course extends Component {
-  render() {
-    const { classes } = this.props;
-    const categoryRows = [];
-
-    let addAssignmentDialog = null;
-    if (this.props.showAddAssignmentDialog) {
-      addAssignmentDialog = <AddAssignment />;
+  getAssignmentRows = () => {
+    const {
+      selectedCategoryName,
+      removeAssignment,
+      selectedCourseID,
+      coursesList
+    } = this.props;
+    const category = {
+      ...coursesList[selectedCourseID].categories[selectedCategoryName],
+      name: selectedCategoryName
+    };
+    const assignmentRows = [];
+    for (const assignmentName in category.assignments) {
+      const displayGrade =
+        category.assignments[assignmentName].pointsEarned !==
+        "Assignment not graded" ? (
+          <Typography>
+            {category.assignments[assignmentName].pointsEarned}/
+            {category.assignments[assignmentName].pointsPossible}
+          </Typography>
+        ) : (
+          "Enter grade"
+        );
+      assignmentRows.push(
+        <TableRow key={assignmentName}>
+          <TableCell>{assignmentName}</TableCell>
+          <TableCell>
+            {category.assignments[assignmentName].dueDate === undefined
+              ? "Enter a due date"
+              : new Date(
+                  category.assignments[assignmentName].dueDate
+                ).toLocaleString()}
+          </TableCell>
+          <TableCell>{displayGrade}</TableCell>
+          <TableCell>
+            <Button
+              onClick={() => {
+                removeAssignment(
+                  assignmentName,
+                  selectedCourseID,
+                  selectedCategoryName
+                );
+              }}
+            >
+              Delete
+            </Button>
+          </TableCell>
+        </TableRow>
+      );
     }
+    return assignmentRows;
+  };
 
-    for (const key in this.props.coursesList[this.props.selectedCourseID]
-      .categories) {
+  getCategoryRows = () => {
+    const {
+      selectedCategoryName,
+      setSelectedCategory,
+      setAddAssignmentDialogState,
+      coursesList,
+      selectedCourseID
+    } = this.props;
+    const categoryRows = [];
+    for (const key in coursesList[selectedCourseID].categories) {
       const category = {
-        ...this.props.coursesList[this.props.selectedCourseID].categories[key],
+        ...coursesList[selectedCourseID].categories[key],
         name: key
       };
 
-      const assignmentRows = [];
-      if (this.props.selectedCategoryName) {
-        for (const assignmentName in category.assignments) {
-          const displayGrade =
-            category.assignments[assignmentName].pointsEarned !==
-            "Assignment not graded" ? (
-              <Typography>
-                {category.assignments[assignmentName].pointsEarned}/
-                {category.assignments[assignmentName].pointsPossible}
-              </Typography>
-            ) : (
-              "Enter grade"
-            );
-          assignmentRows.push(
-            <TableRow key={assignmentName}>
-              <TableCell>{assignmentName}</TableCell>
-              <TableCell>
-                {category.assignments[assignmentName].dueDate === undefined
-                  ? "Enter a due date"
-                  : new Date(
-                      category.assignments[assignmentName].dueDate
-                    ).toLocaleString()}
-              </TableCell>
-              <TableCell>{displayGrade}</TableCell>
-              <TableCell>
-                <Button
-                  onClick={() => {
-                    this.props.removeAssignment(
-                      assignmentName,
-                      this.props.selectedCourseID,
-                      this.props.selectedCategoryName
-                    );
-                  }}
-                >
-                  Delete
-                </Button>
-              </TableCell>
-            </TableRow>
-          );
-        }
-      }
-      const categoryValue = percentageSignUtil(
-        convertAssignmentsToPercent(category.assignments)
-      );
+      const assignmentRows = this.getAssignmentRows();
       categoryRows.push(
         <Fragment key={category.name}>
           <TableRow>
             <TableCell>{category.name}</TableCell>
             <TableCell>{percentageSignUtil(category.weight)}</TableCell>
             <TableCell>
-              <Button
-                onClick={() => this.props.setSelectedCategory(category.name)}
-              >
-                {categoryValue}
+              <Button onClick={() => setSelectedCategory(category.name)}>
+                {percentageSignUtil(
+                  convertAssignmentsToPercent(category.assignments)
+                )}
               </Button>
             </TableCell>
           </TableRow>
-          {this.props.selectedCategoryName === category.name ? (
+          {selectedCategoryName === category.name && (
             <TableRow>
               <TableCell colSpan={3}>
                 <Table>
@@ -131,9 +140,7 @@ class Course extends Component {
                     <TableRow>
                       <TableCell colSpan={3}>
                         <Button
-                          onClick={() =>
-                            this.props.setAddAssignmentDialogState(true)
-                          }
+                          onClick={() => setAddAssignmentDialogState(true)}
                         >
                           Add an Assignment
                         </Button>
@@ -143,23 +150,35 @@ class Course extends Component {
                 </Table>
               </TableCell>
             </TableRow>
-          ) : null}
+          )}
         </Fragment>
       );
     }
+    return categoryRows;
+  };
 
-    const numericGrade = convertCategoriesToNumeric(
-      this.props.coursesList[this.props.selectedCourseID].categories
-    );
-    const displayGrade = percentageSignUtil(numericGrade);
+  render() {
+    const {
+      classes,
+      showAddAssignmentDialog,
+      selectedCourseID,
+      coursesList
+    } = this.props;
+
+    const categoryRows = this.getCategoryRows();
     return (
       <div className={classes.paper}>
-        {addAssignmentDialog}
+        {showAddAssignmentDialog && <AddAssignment />}
         <Typography variant="h2" className={classes.title}>
-          {this.props.coursesList[this.props.selectedCourseID].title}
+          {coursesList[selectedCourseID].title}
         </Typography>
         <Typography variant="h4" className={classes.title}>
-          {"Current Grade: " + displayGrade}
+          {"Current Grade: " +
+            percentageSignUtil(
+              convertCategoriesToNumeric(
+                coursesList[selectedCourseID].categories
+              )
+            )}
         </Typography>
         <Table>
           <TableHead className={classes.tableHead}>
