@@ -48,7 +48,7 @@ describe("Testing utility functions", () => {
       }
     };
     expect(convertAssignmentsToPercent(sampleAssignments)).toBe(90);
-    expect(convertAssignmentsToPercent()).toMatch("No Assignment Data");
+    expect(convertAssignmentsToPercent()).toMatch("No Grade Data");
   });
 
   it("converts a numeric grade to a GPA score (default breakdowns)", () => {

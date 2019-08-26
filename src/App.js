@@ -7,6 +7,7 @@ import Authenticate from "./Containers/Auth";
 import Header from "./Components/Layout/Header";
 import SideDrawer from "./Components/Layout/SideDrawer";
 import HomeContent from "./Containers/HomeContent";
+import Todo from "./Containers/Todo";
 
 import * as actions from "./store/actions/index";
 import { connect } from "react-redux";
@@ -35,6 +36,7 @@ class App extends Component {
         <Switch>
           <Route component={Course} path="/courses/:id" />
           <Route component={Dashboard} path="/dashboard/" />
+          <Route component={Todo} path="/todo/" />
           <Route component={Authenticate} path="/auth/" />
           <Route component={Gpa} path="/gpa/" />
           <Route exact component={HomeContent} path="/" />

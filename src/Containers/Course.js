@@ -41,6 +41,18 @@ const styles = theme => {
 // TODO add due dates, make null values render better
 // TODO add the ability to edit scores (or enter them if none given)
 class Course extends Component {
+  getStatus = assignment => {
+    if (assignment.assignmentGraded) {
+      return "Assignment Graded";
+    } else if (assignment.assignmentSubmitted) {
+      return "Assignment Submitted";
+    } else if (assignment.assignmentComplete) {
+      return "Assignment Complete";
+    } else {
+      return "Assignment Incomplete";
+    }
+  };
+
   getAssignmentRows = () => {
     const {
       selectedCategoryName,
@@ -64,9 +76,13 @@ class Course extends Component {
         ) : (
           "Enter grade"
         );
+
       assignmentRows.push(
         <TableRow key={assignmentName}>
           <TableCell>{assignmentName}</TableCell>
+          <TableCell>
+            {this.getStatus(category.assignments[assignmentName])}
+          </TableCell>
           <TableCell>
             {category.assignments[assignmentName].dueDate === undefined
               ? "Enter a due date"
@@ -130,6 +146,7 @@ class Course extends Component {
                   <TableHead>
                     <TableRow>
                       <TableCell>Assignment Name</TableCell>
+                      <TableCell>Status</TableCell>
                       <TableCell>Due Date</TableCell>
                       <TableCell>Score</TableCell>
                       <TableCell>Delete</TableCell>

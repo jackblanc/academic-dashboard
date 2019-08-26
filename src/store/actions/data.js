@@ -97,7 +97,42 @@ export const addAssignmentSuccess = (
   courseID,
   categoryName
 ) => dispatch => {
-  console.log(dueDate);
+  firebase
+    .database()
+    .ref("/users/")
+    .child(firebase.auth().currentUser.uid)
+    .child("/courseData")
+    .child(courseID)
+    .child("/categories/")
+    .child(categoryName)
+    .child("/assignments/")
+    .child(assignmentName)
+    .child("/assignmentGraded/")
+    .set(assignmentGraded);
+  firebase
+    .database()
+    .ref("/users/")
+    .child(firebase.auth().currentUser.uid)
+    .child("/courseData")
+    .child(courseID)
+    .child("/categories/")
+    .child(categoryName)
+    .child("/assignments/")
+    .child(assignmentName)
+    .child("/assignmentSubmitted/")
+    .set(assignmentSubmitted);
+  firebase
+    .database()
+    .ref("/users/")
+    .child(firebase.auth().currentUser.uid)
+    .child("/courseData")
+    .child(courseID)
+    .child("/categories/")
+    .child(categoryName)
+    .child("/assignments/")
+    .child(assignmentName)
+    .child("/assignmentComplete/")
+    .set(assignmentComplete);
   firebase
     .database()
     .ref("/users/")

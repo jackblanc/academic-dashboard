@@ -247,8 +247,6 @@ class AddCourse extends Component {
       return obj;
     }, {});
 
-    console.log(sumWeights);
-    console.log(flag);
     const course = {
       title: this.state.courseName,
       credits: this.state.credits,

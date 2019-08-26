@@ -93,7 +93,8 @@ class AddCourse extends Component {
                   checked={this.state.assignmentSubmitted}
                   onChange={event => {
                     this.setState({
-                      assignmentSubmitted: event.target.checked
+                      assignmentSubmitted: event.target.checked,
+                      assignmentComplete: event.target.checked
                     });
                   }}
                   value="assignmentSubmitted"
@@ -108,7 +109,9 @@ class AddCourse extends Component {
                   checked={this.state.assignmentGraded}
                   onChange={event => {
                     this.setState({
-                      assignmentGraded: event.target.checked
+                      assignmentGraded: event.target.checked,
+                      assignmentSubmitted: event.target.checked,
+                      assignmentComplete: event.target.checked
                     });
                   }}
                   value="assignmentGraded"

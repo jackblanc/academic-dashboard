@@ -58,7 +58,7 @@ export const convertCategoriesToNumeric = categories => {
     const category = categories[key];
     if (category.assignments) {
       const percentage = convertAssignmentsToPercent(category.assignments);
-      if (percentage !== "No Assignment Data") {
+      if (percentage !== "No Grade Data") {
         numerator +=
           (convertAssignmentsToPercent(category.assignments) / 100) *
           category.weight;
@@ -88,7 +88,7 @@ export const convertAssignmentsToPercent = assignments => {
 
   let value = (sum / count) * 100;
   if (isNaN(value)) {
-    return "No Assignment Data";
+    return "No Grade Data";
   } else {
     return value;
   }

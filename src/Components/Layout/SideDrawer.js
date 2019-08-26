@@ -15,7 +15,7 @@ import LibraryBooks from "@material-ui/icons/LibraryBooks";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import * as actions from "../../store/actions/index";
-import { Grade } from "@material-ui/icons";
+import { Grade, FormatListBulleted } from "@material-ui/icons";
 
 const useStyles = makeStyles({
   list: {
@@ -87,6 +87,18 @@ function SideDrawer(props) {
             <Grade />
           </ListItemIcon>
           <ListItemText>GPA</ListItemText>
+        </ListItem>
+        <ListItem
+          button
+          onClick={() => {
+            props.history.push("/todo");
+            props.closeDrawer();
+          }}
+        >
+          <ListItemIcon>
+            <FormatListBulleted />
+          </ListItemIcon>
+          <ListItemText>To-do List</ListItemText>
         </ListItem>
       </List>
       <Divider />
