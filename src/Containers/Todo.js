@@ -11,6 +11,7 @@ import {
   Button
 } from "@material-ui/core";
 import { Check, NotInterested } from "@material-ui/icons";
+import * as actions from "../store/actions";
 
 const styles = theme => {
   return {
@@ -39,15 +40,16 @@ class Todo extends Component {
 
   getAssignmentList = () => {
     const assignmentList = [];
-    for (const courseName in this.props.coursesList) {
-      const categories = this.props.coursesList[courseName].categories;
-      for (const category in categories) {
-        const assignments = categories[category].assignments;
+    for (const courseID in this.props.coursesList) {
+      const categories = this.props.coursesList[courseID].categories;
+      for (const categoryName in categories) {
+        const assignments = categories[categoryName].assignments;
         for (const assignmentName in assignments) {
           const assignmentData = {
             ...assignments[assignmentName],
             assignmentName,
-            courseName
+            categoryName,
+            courseID
           };
           assignmentList.push(assignmentData);
         }
@@ -62,17 +64,52 @@ class Todo extends Component {
   };
 
   getAssignmentRow = assignment => (
-    <TableRow>
+    <TableRow
+      key={
+        assignment.assignmentName +
+        assignment.courseID +
+        assignment.categoryName
+      }
+    >
       <TableCell>
-        <Button>
+        <Button
+          onClick={() => {
+            this.props.editAssignment(
+              assignment.courseID,
+              assignment.categoryName,
+              assignment.assignmentName,
+              "assignmentComplete",
+              !assignment.assignmentComplete
+            );
+          }}
+        >
           {assignment.assignmentComplete ? <Check /> : <NotInterested />}
         </Button>
       </TableCell>
       <TableCell>
-        {assignment.assignmentSubmitted ? <Check /> : <NotInterested />}
+        <Button
+          onClick={() => {
+            this.props.editAssignment(
+              assignment.courseID,
+              assignment.categoryName,
+              assignment.assignmentName,
+              "assignmentSubmitted",
+              !assignment.assignmentSubmitted
+            );
+            this.props.editAssignment(
+              assignment.courseID,
+              assignment.categoryName,
+              assignment.assignmentName,
+              "assignmentComplete",
+              !assignment.assignmentComplete
+            );
+          }}
+        >
+          {assignment.assignmentSubmitted ? <Check /> : <NotInterested />}
+        </Button>
       </TableCell>
       <TableCell>{assignment.assignmentName}</TableCell>
-      <TableCell>{assignment.courseName}</TableCell>
+      <TableCell>{assignment.courseID}</TableCell>
       <TableCell>{new Date(assignment.dueDate).toLocaleString()}</TableCell>
     </TableRow>
   );
@@ -82,13 +119,23 @@ class Todo extends Component {
     const { showSubmittedAssignments } = this.state;
 
     const assignmentList = this.getAssignmentList();
-    console.log(assignmentList);
 
     return (
       <div className={classes.paper}>
         <Typography variant="h2" className={classes.title}>
           Todo List
         </Typography>
+        <Button
+          onClick={() =>
+            this.setState(prevState => ({
+              showSubmittedAssignments: !prevState.showSubmittedAssignments
+            }))
+          }
+        >
+          {showSubmittedAssignments
+            ? "Hide Submitted Assignments"
+            : "Show Submitted Assignments"}
+        </Button>
         <Table>
           <TableHead>
             <TableRow>
@@ -123,4 +170,28 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(Todo));
+const mapDispatchToProps = dispatch => {
+  return {
+    editAssignment: (
+      courseID,
+      categoryName,
+      assignmentName,
+      fieldName,
+      newValue
+    ) =>
+      dispatch(
+        actions.editAssignment(
+          courseID,
+          categoryName,
+          assignmentName,
+          fieldName,
+          newValue
+        )
+      )
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(Todo));

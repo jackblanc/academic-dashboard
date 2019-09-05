@@ -12,5 +12,6 @@ export {
   fetchUserData,
   addCourse,
   addAssignment,
-  removeAssignment
+  removeAssignment,
+  editAssignment
 } from "./data";

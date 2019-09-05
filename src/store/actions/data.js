@@ -207,3 +207,32 @@ export const removeAssignment = (
     .child(assignmentName)
     .remove();
 };
+
+export const editAssignment = (
+  courseID,
+  categoryName,
+  assignmentName,
+  fieldName,
+  newValue
+) => dispatch => {
+  firebase
+    .database()
+    .ref("/users/")
+    .child(firebase.auth().currentUser.uid)
+    .child("/courseData")
+    .child(courseID)
+    .child("/categories/")
+    .child(categoryName)
+    .child("/assignments/")
+    .child(assignmentName)
+    .child(fieldName)
+    .set(newValue);
+};
+
+export const submitFeedback = (feedbackText, relevantFeature) => dispatch => {
+  firebase
+    .database()
+    .ref("/feedback/")
+    .child(relevantFeature)
+    .push(feedbackText);
+};
