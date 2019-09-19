@@ -158,10 +158,9 @@ export const editAssignment = (
     .set(newValue);
 };
 
-export const submitFeedback = (feedbackText, relevantFeature) => dispatch => {
+export const submitFeedback = feedbackText => dispatch => {
   firebase
     .database()
     .ref("/feedback/")
-    .child(relevantFeature)
     .push(feedbackText);
 };

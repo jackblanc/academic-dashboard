@@ -26,7 +26,8 @@ const styles = theme => {
 
 class Feedback extends Component {
   state = {
-    feedbackText: ""
+    feedbackText: "",
+    submitted: false
   };
 
   render() {
@@ -51,7 +52,18 @@ class Feedback extends Component {
             }}
           />
         </Container>
-        <Button variant>Submit</Button>
+        {this.state.submitted && (
+          <Typography variant="h4">Thank you for your feedback!</Typography>
+        )}
+        <Button
+          variant
+          onClick={() => {
+            this.props.submitFeedback(this.state.feedbackText);
+            this.setState({ feedbackText: "", submitted: true });
+          }}
+        >
+          Submit
+        </Button>
       </div>
     );
   }
@@ -65,22 +77,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    editAssignment: (
-      courseID,
-      categoryName,
-      assignmentName,
-      fieldName,
-      newValue
-    ) =>
-      dispatch(
-        actions.editAssignment(
-          courseID,
-          categoryName,
-          assignmentName,
-          fieldName,
-          newValue
-        )
-      )
+    submitFeedback: message => dispatch(actions.submitFeedback(message))
   };
 };
 

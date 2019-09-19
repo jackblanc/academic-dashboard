@@ -13,5 +13,6 @@ export {
   addCourse,
   addAssignment,
   removeAssignment,
-  editAssignment
+  editAssignment,
+  submitFeedback
 } from "./data";
