@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withStyles } from "@material-ui/core/styles";
-import { Typography, Button, TextField } from "@material-ui/core";
+import { Typography, Button, TextField, Container } from "@material-ui/core";
 import * as actions from "../store/actions";
 
 const styles = theme => {
@@ -38,17 +38,20 @@ class Feedback extends Component {
         <Typography variant="h2" className={classes.title}>
           Feedback Form
         </Typography>
-        <TextField
-          id="feedback-input"
-          label="Feedback"
-          variant="outlined"
-          multiline
-          value={feedbackText}
-          onChange={event => {
-            this.setState({ feedbackText: event.target.value });
-          }}
-        />
-        <Button>Submit</Button>
+        <Container maxWidth="sm">
+          <TextField
+            id="feedback-input"
+            label="Feedback"
+            variant="outlined"
+            multiline
+            fullWidth
+            value={feedbackText}
+            onChange={event => {
+              this.setState({ feedbackText: event.target.value });
+            }}
+          />
+        </Container>
+        <Button variant>Submit</Button>
       </div>
     );
   }

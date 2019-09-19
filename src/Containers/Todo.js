@@ -78,34 +78,12 @@ class Todo extends Component {
               assignment.courseID,
               assignment.categoryName,
               assignment.assignmentName,
-              "assignmentComplete",
-              !assignment.assignmentComplete
+              "isSubmitted",
+              !assignment.isSubmitted
             );
           }}
         >
-          {assignment.assignmentComplete ? <Check /> : <NotInterested />}
-        </Button>
-      </TableCell>
-      <TableCell>
-        <Button
-          onClick={() => {
-            this.props.editAssignment(
-              assignment.courseID,
-              assignment.categoryName,
-              assignment.assignmentName,
-              "assignmentSubmitted",
-              !assignment.assignmentSubmitted
-            );
-            this.props.editAssignment(
-              assignment.courseID,
-              assignment.categoryName,
-              assignment.assignmentName,
-              "assignmentComplete",
-              !assignment.assignmentComplete
-            );
-          }}
-        >
-          {assignment.assignmentSubmitted ? <Check /> : <NotInterested />}
+          {assignment.isSubmitted ? <Check /> : <NotInterested />}
         </Button>
       </TableCell>
       <TableCell>{assignment.assignmentName}</TableCell>
@@ -139,7 +117,6 @@ class Todo extends Component {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Complete</TableCell>
               <TableCell>Submitted</TableCell>
               <TableCell>Assignment Name</TableCell>
               <TableCell>Course Name</TableCell>
@@ -149,8 +126,8 @@ class Todo extends Component {
           <TableBody>
             {assignmentList.map(assignment => {
               if (
-                (assignment.assignmentSubmitted && showSubmittedAssignments) ||
-                !assignment.assignmentSubmitted
+                (assignment.isSubmitted && showSubmittedAssignments) ||
+                !assignment.isSubmitted
               ) {
                 return this.getAssignmentRow(assignment);
               } else {

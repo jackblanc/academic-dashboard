@@ -77,7 +77,7 @@ const header = function SignIn(props) {
             variant="h6"
             className={classes.title}
           >
-            Academic Dashboard
+            DASH
           </Typography>
           {accountAccess}
         </Toolbar>

@@ -17,6 +17,7 @@ import {
 } from "../store/util";
 import * as actions from "../store/actions/index";
 import AddAssignment from "../Components/AddAssignment";
+import { Check, NotInterested } from "@material-ui/icons";
 
 const styles = theme => {
   return {
@@ -42,12 +43,10 @@ const styles = theme => {
 // TODO add the ability to edit scores (or enter them if none given)
 class Course extends Component {
   getStatus = assignment => {
-    if (assignment.assignmentGraded) {
+    if (assignment.isGraded) {
       return "Assignment Graded";
-    } else if (assignment.assignmentSubmitted) {
+    } else if (assignment.isSubmitted) {
       return "Assignment Submitted";
-    } else if (assignment.assignmentComplete) {
-      return "Assignment Complete";
     } else {
       return "Assignment Incomplete";
     }
@@ -58,7 +57,8 @@ class Course extends Component {
       selectedCategoryName,
       removeAssignment,
       selectedCourseID,
-      coursesList
+      coursesList,
+      editAssignment
     } = this.props;
     const category = {
       ...coursesList[selectedCourseID].categories[selectedCategoryName],
@@ -66,12 +66,16 @@ class Course extends Component {
     };
     const assignmentRows = [];
     for (const assignmentName in category.assignments) {
+      const {
+        pointsEarned,
+        pointsPossible,
+        dueDate,
+        isSubmitted
+      } = category.assignments[assignmentName];
       const displayGrade =
-        category.assignments[assignmentName].pointsEarned !==
-        "Assignment not graded" ? (
+        pointsEarned !== "Assignment not graded" ? (
           <Typography>
-            {category.assignments[assignmentName].pointsEarned}/
-            {category.assignments[assignmentName].pointsPossible}
+            {pointsEarned}/{pointsPossible}
           </Typography>
         ) : (
           "Enter grade"
@@ -81,14 +85,24 @@ class Course extends Component {
         <TableRow key={assignmentName}>
           <TableCell>{assignmentName}</TableCell>
           <TableCell>
-            {this.getStatus(category.assignments[assignmentName])}
+            <Button
+              onClick={() => {
+                editAssignment(
+                  selectedCourseID,
+                  selectedCategoryName,
+                  assignmentName,
+                  "isSubmitted",
+                  !isSubmitted
+                );
+              }}
+            >
+              {isSubmitted ? <Check /> : <NotInterested />}
+            </Button>
           </TableCell>
           <TableCell>
-            {category.assignments[assignmentName].dueDate === undefined
+            {dueDate === null
               ? "Enter a due date"
-              : new Date(
-                  category.assignments[assignmentName].dueDate
-                ).toLocaleString()}
+              : new Date(dueDate).toLocaleString()}
           </TableCell>
           <TableCell>{displayGrade}</TableCell>
           <TableCell>
@@ -107,6 +121,7 @@ class Course extends Component {
         </TableRow>
       );
     }
+    // TODO sort by due date, use dateCreated if due date null???
     return assignmentRows;
   };
 
@@ -146,7 +161,7 @@ class Course extends Component {
                   <TableHead>
                     <TableRow>
                       <TableCell>Assignment Name</TableCell>
-                      <TableCell>Status</TableCell>
+                      <TableCell>Submitted</TableCell>
                       <TableCell>Due Date</TableCell>
                       <TableCell>Score</TableCell>
                       <TableCell>Delete</TableCell>
@@ -228,7 +243,23 @@ const mapDispatchToProps = dispatch => {
     setAddAssignmentDialogState: boolean =>
       dispatch(actions.setAddAssignmentDialogState(boolean)),
     removeAssignment: (name, courseID, categoryName) =>
-      dispatch(actions.removeAssignment(name, courseID, categoryName))
+      dispatch(actions.removeAssignment(name, courseID, categoryName)),
+    editAssignment: (
+      courseID,
+      categoryName,
+      assignmentName,
+      fieldName,
+      newValue
+    ) =>
+      dispatch(
+        actions.editAssignment(
+          courseID,
+          categoryName,
+          assignmentName,
+          fieldName,
+          newValue
+        )
+      )
   };
 };
 

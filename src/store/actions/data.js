@@ -32,9 +32,8 @@ export const addAssignment = (
   pointsEarned,
   pointsPossible,
   dueDate,
-  assignmentComplete,
-  assignmentSubmitted,
-  assignmentGraded,
+  isSubmitted,
+  isGraded,
   courseID,
   categoryName
 ) => dispatch => {
@@ -46,12 +45,12 @@ export const addAssignment = (
   if (assignmentName === "") {
     error.assignmentNameError = "Assignment Name field cannot be empty";
   }
-  if (isNaN(pointsEarned) && assignmentGraded) {
+  if (isNaN(pointsEarned) && isGraded) {
     error.pointsEarnedError = "Points Earned field must be a number";
   } else if (pointsEarned === "") {
     pointsEarned = "Assignment not graded";
   }
-  if (isNaN(pointsPossible) && assignmentGraded) {
+  if (isNaN(pointsPossible) && isGraded) {
     error.pointsPossibleError = "Points Possible field must be a number";
   } else if (pointsPossible === "") {
     pointsPossible = "Assignment not graded";
@@ -67,9 +66,8 @@ export const addAssignment = (
         pointsEarned,
         pointsPossible,
         dueDate,
-        assignmentComplete,
-        assignmentSubmitted,
-        assignmentGraded,
+        isSubmitted,
+        isGraded,
         courseID,
         categoryName
       )
@@ -91,13 +89,12 @@ export const addAssignmentSuccess = (
   pointsEarned,
   pointsPossible,
   dueDate,
-  assignmentComplete,
-  assignmentSubmitted,
-  assignmentGraded,
+  isSubmitted,
+  isGraded,
   courseID,
   categoryName
 ) => dispatch => {
-  firebase
+  const reference = firebase
     .database()
     .ref("/users/")
     .child(firebase.auth().currentUser.uid)
@@ -106,81 +103,13 @@ export const addAssignmentSuccess = (
     .child("/categories/")
     .child(categoryName)
     .child("/assignments/")
-    .child(assignmentName)
-    .child("/assignmentGraded/")
-    .set(assignmentGraded);
-  firebase
-    .database()
-    .ref("/users/")
-    .child(firebase.auth().currentUser.uid)
-    .child("/courseData")
-    .child(courseID)
-    .child("/categories/")
-    .child(categoryName)
-    .child("/assignments/")
-    .child(assignmentName)
-    .child("/assignmentSubmitted/")
-    .set(assignmentSubmitted);
-  firebase
-    .database()
-    .ref("/users/")
-    .child(firebase.auth().currentUser.uid)
-    .child("/courseData")
-    .child(courseID)
-    .child("/categories/")
-    .child(categoryName)
-    .child("/assignments/")
-    .child(assignmentName)
-    .child("/assignmentComplete/")
-    .set(assignmentComplete);
-  firebase
-    .database()
-    .ref("/users/")
-    .child(firebase.auth().currentUser.uid)
-    .child("/courseData")
-    .child(courseID)
-    .child("/categories/")
-    .child(categoryName)
-    .child("/assignments/")
-    .child(assignmentName)
-    .child("/pointsEarned/")
-    .set(pointsEarned);
-  firebase
-    .database()
-    .ref("/users/")
-    .child(firebase.auth().currentUser.uid)
-    .child("/courseData")
-    .child(courseID)
-    .child("/categories/")
-    .child(categoryName)
-    .child("/assignments/")
-    .child(assignmentName)
-    .child("/pointsPossible/")
-    .set(pointsPossible);
-  firebase
-    .database()
-    .ref("/users/")
-    .child(firebase.auth().currentUser.uid)
-    .child("/courseData")
-    .child(courseID)
-    .child("/categories/")
-    .child(categoryName)
-    .child("/assignments/")
-    .child(assignmentName)
-    .child("/dueDate/")
-    .set(dueDate.toISOString());
-  firebase
-    .database()
-    .ref("/users/")
-    .child(firebase.auth().currentUser.uid)
-    .child("/courseData")
-    .child(courseID)
-    .child("/categories/")
-    .child(categoryName)
-    .child("/assignments/")
-    .child(assignmentName)
-    .child("/dateCreated/")
-    .set(new Date().toISOString());
+    .child(assignmentName);
+  reference.child("/isGraded/").set(isGraded);
+  reference.child("/isSubmitted/").set(isSubmitted);
+  reference.child("/pointsEarned/").set(pointsEarned);
+  reference.child("/pointsPossible/").set(pointsPossible);
+  reference.child("/dueDate/").set(dueDate.toISOString());
+  reference.child("/dateCreated/").set(new Date().toISOString());
   dispatch({
     type: types.ADD_ASSIGNMENT_SUCCESS
   });

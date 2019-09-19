@@ -34,9 +34,8 @@ class AddCourse extends Component {
     assignmentName: "",
     pointsEarned: "",
     pointsPossible: "",
-    assignmentComplete: false,
-    assignmentSubmitted: false,
-    assignmentGraded: false,
+    isSubmitted: false,
+    isGraded: false,
     dueDate: new Date()
   };
 
@@ -75,29 +74,13 @@ class AddCourse extends Component {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={this.state.assignmentComplete}
+                  checked={this.state.isSubmitted}
                   onChange={event => {
                     this.setState({
-                      assignmentComplete: event.target.checked
+                      isSubmitted: event.target.checked
                     });
                   }}
-                  value="assignmentComplete"
-                  color="primary"
-                />
-              }
-              label="Assignment Complete"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={this.state.assignmentSubmitted}
-                  onChange={event => {
-                    this.setState({
-                      assignmentSubmitted: event.target.checked,
-                      assignmentComplete: event.target.checked
-                    });
-                  }}
-                  value="assignmentSubmitted"
+                  value="isSubmitted"
                   color="primary"
                 />
               }
@@ -106,22 +89,21 @@ class AddCourse extends Component {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={this.state.assignmentGraded}
+                  checked={this.state.isGraded}
                   onChange={event => {
                     this.setState({
-                      assignmentGraded: event.target.checked,
-                      assignmentSubmitted: event.target.checked,
-                      assignmentComplete: event.target.checked
+                      isGraded: event.target.checked,
+                      isSubmitted: event.target.checked
                     });
                   }}
-                  value="assignmentGraded"
+                  value="isGraded"
                   color="primary"
                 />
               }
               label="Assignment Graded"
             />
           </Box>
-          {!this.state.assignmentSubmitted && (
+          {!this.state.isSubmitted && (
             <Box>
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <KeyboardDatePicker
@@ -154,7 +136,7 @@ class AddCourse extends Component {
               </MuiPickersUtilsProvider>
             </Box>
           )}
-          {this.state.assignmentGraded && (
+          {this.state.isGraded && (
             <Fragment>
               <TextField
                 margin="dense"
@@ -219,9 +201,8 @@ class AddCourse extends Component {
       this.state.pointsEarned,
       this.state.pointsPossible,
       this.state.dueDate,
-      this.state.assignmentComplete,
-      this.state.assignmentSubmitted,
-      this.state.assignmentGraded,
+      this.state.isSubmitted,
+      this.state.isGraded,
       this.props.courseID,
       this.props.categoryName
     );
@@ -246,9 +227,8 @@ const mapDispatchToProps = dispatch => {
       pointsEarned,
       pointsPossible,
       dueDate,
-      assignmentComplete,
-      assignmentSubmitted,
-      assignmentGraded,
+      isSubmitted,
+      isGraded,
       courseID,
       categoryName
     ) =>
@@ -258,9 +238,8 @@ const mapDispatchToProps = dispatch => {
           pointsEarned,
           pointsPossible,
           dueDate,
-          assignmentComplete,
-          assignmentSubmitted,
-          assignmentGraded,
+          isSubmitted,
+          isGraded,
           courseID,
           categoryName
         )
