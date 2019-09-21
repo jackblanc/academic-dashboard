@@ -28,7 +28,7 @@ function HomeContent(props) {
       description="A revolutionary tool that allows students to stay on top of their coursework"
       button={
         <Button color="primary" onClick={() => props.history.push("/auth")}>
-          {props.isAuthenticated ? "Continue to Dashboard" : "Sign In"}
+          {props.isAuthenticated ? "Continue to DASH" : "Sign In"}
         </Button>
       }
     />

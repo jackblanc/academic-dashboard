@@ -8,7 +8,10 @@ import {
   TableBody,
   withStyles,
   Typography,
-  Button
+  Popover,
+  Button,
+  TextField,
+  Block
 } from "@material-ui/core";
 import {
   convertAssignmentsToPercent,
@@ -18,6 +21,7 @@ import {
 import * as actions from "../store/actions/index";
 import AddAssignment from "../Components/AddAssignment";
 import { Check, NotInterested } from "@material-ui/icons";
+import { POPOVER_ELEMENT_SWITCH } from "../constants";
 
 const styles = theme => {
   return {
@@ -35,6 +39,9 @@ const styles = theme => {
     title: {
       marginBottom: theme.spacing(4),
       textAlign: "center"
+    },
+    popover: {
+      margin: theme.spacing(2)
     }
   };
 };
@@ -42,6 +49,13 @@ const styles = theme => {
 // TODO add due dates, make null values render better
 // TODO add the ability to edit scores (or enter them if none given)
 class Course extends Component {
+  state = {
+    anchorEl: null,
+    pointsEarned: "",
+    pointsPossible: "",
+    selectedAssignmentName: ""
+  };
+
   getStatus = assignment => {
     if (assignment.isGraded) {
       return "Assignment Graded";
@@ -49,6 +63,39 @@ class Course extends Component {
       return "Assignment Submitted";
     } else {
       return "Assignment Incomplete";
+    }
+  };
+
+  handleClick = event => {
+    this.setState({ anchorEl: event.currentTarget });
+  };
+
+  handleClose = () => {
+    const anchorElID = this.state.anchorEl.id;
+    this.setState({ anchorEl: null });
+    switch (anchorElID) {
+      case POPOVER_ELEMENT_SWITCH.CATEGORY_WEIGHT:
+        // this.props.editAssignment(
+        //   this.props.selectedCourseID,
+        //   this.props.selectedCategoryName
+        // );
+        break;
+      case POPOVER_ELEMENT_SWITCH.DISPLAY_GRADE:
+        this.props.editAssignment(
+          this.props.selectedCourseID,
+          this.props.selectedCategoryName,
+          this.state.selectedAssignmentName,
+          "pointsEarned",
+          this.state.pointsEarned
+        );
+        this.props.editAssignment(
+          this.props.selectedCourseID,
+          this.props.selectedCategoryName,
+          this.state.selectedAssignmentName,
+          "pointsPossible",
+          this.state.pointsPossible
+        );
+        break;
     }
   };
 
@@ -104,7 +151,17 @@ class Course extends Component {
               ? "Enter a due date"
               : new Date(dueDate).toLocaleString()}
           </TableCell>
-          <TableCell>{displayGrade}</TableCell>
+          <TableCell>
+            <Button
+              onClick={event => {
+                this.setState({ selectedAssignmentName: assignmentName });
+                this.handleClick(event, POPOVER_ELEMENT_SWITCH.DISPLAY_GRADE);
+              }}
+              id={POPOVER_ELEMENT_SWITCH.DISPLAY_GRADE}
+            >
+              {displayGrade}
+            </Button>
+          </TableCell>
           <TableCell>
             <Button
               onClick={() => {
@@ -145,7 +202,14 @@ class Course extends Component {
         <Fragment key={category.name}>
           <TableRow>
             <TableCell>{category.name}</TableCell>
-            <TableCell>{percentageSignUtil(category.weight)}</TableCell>
+            <TableCell>
+              <Button
+                onClick={this.handleClick}
+                id={POPOVER_ELEMENT_SWITCH.CATEGORY_WEIGHT}
+              >
+                {percentageSignUtil(category.weight)}
+              </Button>
+            </TableCell>
             <TableCell>
               <Button onClick={() => setSelectedCategory(category.name)}>
                 {percentageSignUtil(
@@ -189,6 +253,67 @@ class Course extends Component {
     return categoryRows;
   };
 
+  getPopoverContent = () => {
+    if (this.state.anchorEl) {
+      switch (this.state.anchorEl.id) {
+        case POPOVER_ELEMENT_SWITCH.CATEGORY_WEIGHT:
+          return null;
+        // <TextField
+        //   margin="dense"
+        //   label="Category Weight"
+        //   type="text"
+        //   fullWidth
+        //   autoComplete="off"
+        //   value={this.state.editCategoryWeight}
+        //   onChange={event => {
+        //     this.setState({
+        //       editCategoryWeight: event.target.value
+        //     });
+        //   }}
+        //   // error={this.props.error.pointsPossibleError !== null}
+        //   // helperText={this.props.error.pointsPossibleError}
+        // />
+        case POPOVER_ELEMENT_SWITCH.DISPLAY_GRADE:
+          return (
+            <React.Fragment>
+              <TextField
+                margin="dense"
+                label="Points Earned"
+                type="text"
+                fullWidth
+                autoComplete="off"
+                value={this.state.pointsEarned}
+                onChange={event => {
+                  this.setState({
+                    pointsEarned: event.target.value
+                  });
+                }}
+                // error={this.props.error.pointsPossibleError !== null}
+                // helperText={this.props.error.pointsPossibleError}
+              />
+              <TextField
+                margin="dense"
+                label="Points Possible"
+                type="text"
+                fullWidth
+                autoComplete="off"
+                value={this.state.pointsPossible}
+                onChange={event => {
+                  this.setState({
+                    pointsPossible: event.target.value
+                  });
+                }}
+                // error={this.props.error.pointsPossibleError !== null}
+                // helperText={this.props.error.pointsPossibleError}
+              />
+            </React.Fragment>
+          );
+        default:
+          return;
+      }
+    }
+  };
+
   render() {
     const {
       classes,
@@ -222,6 +347,21 @@ class Course extends Component {
           </TableHead>
           <TableBody>{categoryRows}</TableBody>
         </Table>
+        <Popover
+          open={!!this.state.anchorEl}
+          onClose={this.handleClose}
+          anchorEl={this.state.anchorEl}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left"
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "left"
+          }}
+        >
+          <div className={classes.popover}>{this.getPopoverContent()}</div>
+        </Popover>
       </div>
     );
   }

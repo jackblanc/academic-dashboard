@@ -164,3 +164,11 @@ export const submitFeedback = feedbackText => dispatch => {
     .ref("/feedback/")
     .push(feedbackText);
 };
+
+export const editCategory = (
+  courseID,
+  categoryName,
+  assignmentName,
+  fieldName,
+  newValue
+) => dispatch => {};
