@@ -10,8 +10,7 @@ import {
   Typography,
   Popover,
   Button,
-  TextField,
-  Block
+  TextField
 } from "@material-ui/core";
 import {
   convertAssignmentsToPercent,
@@ -46,24 +45,14 @@ const styles = theme => {
   };
 };
 
-// TODO add due dates, make null values render better
-// TODO add the ability to edit scores (or enter them if none given)
 class Course extends Component {
   state = {
     anchorEl: null,
     pointsEarned: "",
     pointsPossible: "",
-    selectedAssignmentName: ""
-  };
-
-  getStatus = assignment => {
-    if (assignment.isGraded) {
-      return "Assignment Graded";
-    } else if (assignment.isSubmitted) {
-      return "Assignment Submitted";
-    } else {
-      return "Assignment Incomplete";
-    }
+    selectedAssignmentName: "",
+    selectedCategoryName: "",
+    categoryWeight: ""
   };
 
   handleClick = event => {
@@ -71,31 +60,48 @@ class Course extends Component {
   };
 
   handleClose = () => {
-    const anchorElID = this.state.anchorEl.id;
+    const { editCategory, editAssignment, selectedCourseID } = this.props;
+    const {
+      anchorEl,
+      selectedAssignmentName,
+      selectedCategoryName,
+      categoryWeight,
+      pointsEarned,
+      pointsPossible
+    } = this.state;
     this.setState({ anchorEl: null });
-    switch (anchorElID) {
+    switch (anchorEl.id) {
       case POPOVER_ELEMENT_SWITCH.CATEGORY_WEIGHT:
-        // this.props.editAssignment(
-        //   this.props.selectedCourseID,
-        //   this.props.selectedCategoryName
-        // );
+        editCategory(
+          selectedCourseID,
+          selectedCategoryName,
+          "weight",
+          parseFloat(categoryWeight === "" ? 0 : categoryWeight)
+        );
+        this.setState({ categoryWeight: "" });
         break;
       case POPOVER_ELEMENT_SWITCH.DISPLAY_GRADE:
-        this.props.editAssignment(
-          this.props.selectedCourseID,
-          this.props.selectedCategoryName,
-          this.state.selectedAssignmentName,
+        editAssignment(
+          selectedCourseID,
+          selectedCategoryName,
+          selectedAssignmentName,
           "pointsEarned",
-          this.state.pointsEarned
+          pointsEarned === "" ? "Assignment not graded" : pointsEarned
         );
-        this.props.editAssignment(
-          this.props.selectedCourseID,
-          this.props.selectedCategoryName,
-          this.state.selectedAssignmentName,
+        editAssignment(
+          selectedCourseID,
+          selectedCategoryName,
+          selectedAssignmentName,
           "pointsPossible",
-          this.state.pointsPossible
+          pointsPossible === "" ? "Assignment not graded" : pointsPossible
         );
+        this.setState({
+          pointsEarned: "",
+          pointsPossible: ""
+        });
         break;
+      default:
+        return null;
     }
   };
 
@@ -204,7 +210,10 @@ class Course extends Component {
             <TableCell>{category.name}</TableCell>
             <TableCell>
               <Button
-                onClick={this.handleClick}
+                onClick={event => {
+                  this.setState({ selectedCategoryName: category.name });
+                  this.handleClick(event);
+                }}
                 id={POPOVER_ELEMENT_SWITCH.CATEGORY_WEIGHT}
               >
                 {percentageSignUtil(category.weight)}
@@ -257,22 +266,21 @@ class Course extends Component {
     if (this.state.anchorEl) {
       switch (this.state.anchorEl.id) {
         case POPOVER_ELEMENT_SWITCH.CATEGORY_WEIGHT:
-          return null;
-        // <TextField
-        //   margin="dense"
-        //   label="Category Weight"
-        //   type="text"
-        //   fullWidth
-        //   autoComplete="off"
-        //   value={this.state.editCategoryWeight}
-        //   onChange={event => {
-        //     this.setState({
-        //       editCategoryWeight: event.target.value
-        //     });
-        //   }}
-        //   // error={this.props.error.pointsPossibleError !== null}
-        //   // helperText={this.props.error.pointsPossibleError}
-        // />
+          return (
+            <TextField
+              margin="dense"
+              label="Category Weight"
+              type="text"
+              fullWidth
+              autoComplete="off"
+              value={this.state.categoryWeight}
+              onChange={event => {
+                this.setState({
+                  categoryWeight: event.target.value
+                });
+              }}
+            />
+          );
         case POPOVER_ELEMENT_SWITCH.DISPLAY_GRADE:
           return (
             <React.Fragment>
@@ -288,8 +296,6 @@ class Course extends Component {
                     pointsEarned: event.target.value
                   });
                 }}
-                // error={this.props.error.pointsPossibleError !== null}
-                // helperText={this.props.error.pointsPossibleError}
               />
               <TextField
                 margin="dense"
@@ -303,8 +309,6 @@ class Course extends Component {
                     pointsPossible: event.target.value
                   });
                 }}
-                // error={this.props.error.pointsPossibleError !== null}
-                // helperText={this.props.error.pointsPossibleError}
               />
             </React.Fragment>
           );
@@ -399,6 +403,10 @@ const mapDispatchToProps = dispatch => {
           fieldName,
           newValue
         )
+      ),
+    editCategory: (courseID, categoryName, fieldName, newValue) =>
+      dispatch(
+        actions.editCategory(courseID, categoryName, fieldName, newValue)
       )
   };
 };

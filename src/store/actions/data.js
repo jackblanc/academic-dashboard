@@ -168,7 +168,17 @@ export const submitFeedback = feedbackText => dispatch => {
 export const editCategory = (
   courseID,
   categoryName,
-  assignmentName,
   fieldName,
   newValue
-) => dispatch => {};
+) => dispatch => {
+  firebase
+    .database()
+    .ref("/users/")
+    .child(firebase.auth().currentUser.uid)
+    .child("/courseData")
+    .child(courseID)
+    .child("/categories/")
+    .child(categoryName)
+    .child(fieldName)
+    .set(newValue);
+};

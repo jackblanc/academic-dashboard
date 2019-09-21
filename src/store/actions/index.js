@@ -14,5 +14,6 @@ export {
   addAssignment,
   removeAssignment,
   editAssignment,
-  submitFeedback
+  submitFeedback,
+  editCategory
 } from "./data";
