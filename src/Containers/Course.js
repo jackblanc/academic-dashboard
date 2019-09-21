@@ -325,8 +325,13 @@ class Course extends Component {
       selectedCourseID,
       coursesList
     } = this.props;
-
     const categoryRows = this.getCategoryRows();
+
+    let sumWeights = 0;
+    const categoryList = coursesList[selectedCourseID].categories;
+    for (const category in categoryList) {
+      sumWeights += categoryList[category].weight;
+    }
     return (
       <div className={classes.paper}>
         {showAddAssignmentDialog && <AddAssignment />}
@@ -340,6 +345,12 @@ class Course extends Component {
                 coursesList[selectedCourseID].categories
               )
             )}
+        </Typography>
+        <Typography variant="h6" color="error">
+          {sumWeights !== 100 &&
+            "Error: Category weights must sum to 100% (current value: " +
+              sumWeights +
+              "%)"}
         </Typography>
         <Table>
           <TableHead className={classes.tableHead}>
