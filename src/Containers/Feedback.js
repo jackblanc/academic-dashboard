@@ -39,6 +39,9 @@ class Feedback extends Component {
         <Typography variant="h2" className={classes.title}>
           Feedback Form
         </Typography>
+        {this.state.submitted && (
+          <Typography variant="h6">Thank you for your feedback!</Typography>
+        )}
         <Container maxWidth="sm">
           <TextField
             id="feedback-input"
@@ -48,13 +51,13 @@ class Feedback extends Component {
             fullWidth
             value={feedbackText}
             onChange={event => {
-              this.setState({ feedbackText: event.target.value });
+              this.setState({
+                feedbackText: event.target.value,
+                submitted: false
+              });
             }}
           />
         </Container>
-        {this.state.submitted && (
-          <Typography variant="h4">Thank you for your feedback!</Typography>
-        )}
         <Button
           variant
           onClick={() => {
