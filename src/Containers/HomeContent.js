@@ -25,6 +25,7 @@ function HomeContent(props) {
     <EmptyState
       icon={<CodeIcon className={classes.emptyStateIcon} color="action" />}
       title={"DASH"}
+      version={"ALPHA VERSION 1"}
       description="A revolutionary tool that allows students to stay on top of their coursework"
       button={
         <Button color="primary" onClick={() => props.history.push("/auth")}>
