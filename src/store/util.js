@@ -24,7 +24,6 @@ export const convertNumericGradeToGPA = numericGrade => {
 
   for (const key in defaultBreakdowns) {
     const obj = defaultBreakdowns[key];
-    console.log(numericGrade);
     if (numericGrade >= obj.minGrade) {
       return obj.gpa;
     }
