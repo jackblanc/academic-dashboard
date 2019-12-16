@@ -4,6 +4,7 @@ import { Button } from "@material-ui/core";
 import EmptyState from "../Components/Layout/EmptyState";
 import { makeStyles } from "@material-ui/styles";
 import { connect } from "react-redux";
+import * as actions from "../store/actions/index";
 
 const useStyles = makeStyles(theme => ({
   emptyStateIcon: {
@@ -19,22 +20,47 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function HomeContent(props) {
+const HomeContent = props => {
   const classes = useStyles();
   return (
     <EmptyState
       icon={<CodeIcon className={classes.emptyStateIcon} color="action" />}
       title={"DASH"}
-      version={"ALPHA VERSION 1"}
-      description="A revolutionary tool that allows students to stay on top of their coursework"
+      version={""}
+      description="Dash is a to-do list built for students. In addition to organizational benefits, 
+      it helps students prioritize their work by tracking grades and GPA data. The project utilizes React, Redux,
+      React-Router, Firebase, and Material UI."
       button={
-        <Button color="primary" onClick={() => props.history.push("/auth")}>
-          {props.isAuthenticated ? "Continue to DASH" : "Sign In"}
-        </Button>
+        <>
+          <Button
+            color="primary"
+            onClick={() => props.history.push("/auth?isSignIn=true")}
+          >
+            {props.isAuthenticated ? "Continue to DASH" : "Sign In"}
+          </Button>
+          <br />
+          {!props.isAuthenticated && (
+            <Button color="primary" onClick={() => props.history.push("/auth")}>
+              Sign Up
+            </Button>
+          )}
+          <br />
+          {!props.isAuthenticated && (
+            <Button
+              color="primary"
+              onClick={() => {
+                props.history.push("/auth");
+                props.onAuth("jblanc222@gmail.com", "testing", true);
+              }}
+            >
+              View Demo
+            </Button>
+          )}
+        </>
       }
     />
   );
-}
+};
 
 const mapStateToProps = state => {
   return {
@@ -42,4 +68,11 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(HomeContent);
+const mapDispatchToProps = dispatch => {
+  return {
+    onAuth: (email, password, isSignIn) =>
+      dispatch(actions.authenticate(email, password, isSignIn))
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeContent);

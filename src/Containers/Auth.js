@@ -13,6 +13,7 @@ import Container from "@material-ui/core/Container";
 import * as actions from "../store/actions/index";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
+import queryString from "query-string";
 
 const styles = theme => {
   return {
@@ -49,8 +50,17 @@ class Auth extends Component {
   state = {
     email: "",
     password: "",
-    isSignIn: true
+    isSignIn: false
   };
+
+  componentDidMount() {
+    const params = queryString.parse(this.props.location.search);
+    if (params.isSignIn) {
+      this.setState({
+        isSignIn: params.isSignIn
+      });
+    }
+  }
 
   onAlternate = () => {
     const bool = this.state.isSignIn;
