@@ -142,44 +142,42 @@ class AddCourse extends Component {
               {this.state.categories.map((category, index) => {
                 return (
                   <Box item>
-                    <>
-                      <Grid>
-                        <TextField
-                          label={"Category Name"}
-                          className={classes.input}
-                          value={this.state.categories[index].name}
-                          onChange={event => {
-                            const newCategories = this.state.categories.map(
-                              (category, idx) => {
-                                if (index !== idx) return category;
-                                return {
-                                  ...category,
-                                  name: event.target.value
-                                };
-                              }
-                            );
-                            this.setState({ categories: newCategories });
-                          }}
-                        />
-                        <TextField
-                          label={"Category Weight"}
-                          className={classes.input}
-                          value={this.state.categories[index].weight}
-                          onChange={event => {
-                            const newCategories = this.state.categories.map(
-                              (category, idx) => {
-                                if (index !== idx) return category;
-                                return {
-                                  ...category,
-                                  weight: event.target.value
-                                };
-                              }
-                            );
-                            this.setState({ categories: newCategories });
-                          }}
-                        />
-                      </Grid>
-                    </>
+                    <Grid>
+                      <TextField
+                        label={"Category Name"}
+                        className={classes.input}
+                        value={this.state.categories[index].name}
+                        onChange={event => {
+                          const newCategories = this.state.categories.map(
+                            (category, idx) => {
+                              if (index !== idx) return category;
+                              return {
+                                ...category,
+                                name: event.target.value
+                              };
+                            }
+                          );
+                          this.setState({ categories: newCategories });
+                        }}
+                      />
+                      <TextField
+                        label={"Category Weight"}
+                        className={classes.input}
+                        value={this.state.categories[index].weight}
+                        onChange={event => {
+                          const newCategories = this.state.categories.map(
+                            (category, idx) => {
+                              if (index !== idx) return category;
+                              return {
+                                ...category,
+                                weight: event.target.value
+                              };
+                            }
+                          );
+                          this.setState({ categories: newCategories });
+                        }}
+                      />
+                    </Grid>
                   </Box>
                 );
               })}
