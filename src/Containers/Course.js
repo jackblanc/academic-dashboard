@@ -160,7 +160,11 @@ class Course extends Component {
           <TableCell>
             <Button
               onClick={event => {
-                this.setState({ selectedAssignmentName: assignmentName });
+                this.setState({
+                  selectedAssignmentName: assignmentName,
+                  pointsEarned: pointsEarned,
+                  pointsPossible: pointsPossible
+                });
                 this.handleClick(event, POPOVER_ELEMENT_SWITCH.DISPLAY_GRADE);
               }}
               id={POPOVER_ELEMENT_SWITCH.DISPLAY_GRADE}
@@ -211,7 +215,10 @@ class Course extends Component {
             <TableCell>
               <Button
                 onClick={event => {
-                  this.setState({ selectedCategoryName: category.name });
+                  this.setState({
+                    selectedCategoryName: category.name,
+                    categoryWeight: category.weight
+                  });
                   this.handleClick(event);
                 }}
                 id={POPOVER_ELEMENT_SWITCH.CATEGORY_WEIGHT}
