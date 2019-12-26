@@ -12,7 +12,8 @@ import {
   Button,
   Grid,
   withStyles,
-  Typography
+  Typography,
+  Box
 } from "@material-ui/core";
 
 import { connect } from "react-redux";
@@ -25,6 +26,9 @@ const styles = theme => {
     },
     invalidInput: {
       color: theme.palette.error.main
+    },
+    addRemoveCategoryButtonContainer: {
+      "margin-top": "5%"
     }
   };
 };
@@ -134,73 +138,83 @@ class AddCourse extends Component {
               Enter the grading schema for this course. Example: Quizzes count
               for 20% of final grade, Tests for 30%, etc... sum to 100% please
             </DialogContentText>
-            <Grid container justify="center" spacing="2">
+            <Grid container justify="center" spacing="1">
               {this.state.categories.map((category, index) => {
                 return (
-                  <Fragment key={index}>
-                    <Grid item>
-                      <TextField
-                        label={"Category Name"}
-                        className={classes.input}
-                        value={this.state.categories[index].name}
-                        onChange={event => {
-                          const newCategories = this.state.categories.map(
-                            (category, idx) => {
-                              if (index !== idx) return category;
-                              return { ...category, name: event.target.value };
-                            }
-                          );
-                          this.setState({ categories: newCategories });
-                        }}
-                      />
-                    </Grid>
-                    <Grid item>
-                      <TextField
-                        label={"Category Weight"}
-                        className={classes.input}
-                        value={this.state.categories[index].weight}
-                        onChange={event => {
-                          const newCategories = this.state.categories.map(
-                            (category, idx) => {
-                              if (index !== idx) return category;
-                              return {
-                                ...category,
-                                weight: event.target.value
-                              };
-                            }
-                          );
-                          this.setState({ categories: newCategories });
-                        }}
-                      />
-                    </Grid>
-                  </Fragment>
+                  <Box item>
+                    <>
+                      <Grid>
+                        <TextField
+                          label={"Category Name"}
+                          className={classes.input}
+                          value={this.state.categories[index].name}
+                          onChange={event => {
+                            const newCategories = this.state.categories.map(
+                              (category, idx) => {
+                                if (index !== idx) return category;
+                                return {
+                                  ...category,
+                                  name: event.target.value
+                                };
+                              }
+                            );
+                            this.setState({ categories: newCategories });
+                          }}
+                        />
+                        <TextField
+                          label={"Category Weight"}
+                          className={classes.input}
+                          value={this.state.categories[index].weight}
+                          onChange={event => {
+                            const newCategories = this.state.categories.map(
+                              (category, idx) => {
+                                if (index !== idx) return category;
+                                return {
+                                  ...category,
+                                  weight: event.target.value
+                                };
+                              }
+                            );
+                            this.setState({ categories: newCategories });
+                          }}
+                        />
+                      </Grid>
+                    </>
+                  </Box>
                 );
               })}
             </Grid>
-            <Button
-              onClick={() => {
-                if (this.state.categories.length > 1) {
-                  const copy = [...this.state.categories];
-                  copy.pop();
-                  this.setState({ categories: copy });
-                }
-              }}
-              className={classes.addCategoryButton}
+            <Grid
+              container
+              justify="center"
+              spacing="2"
+              className={classes.addRemoveCategoryButtonContainer}
             >
-              Remove Category
-            </Button>
-            <Button
-              onClick={() => {
-                this.setState({
-                  categories: this.state.categories.concat([
-                    { name: "", weight: "" }
-                  ])
-                });
-              }}
-              className={classes.addCategoryButton}
-            >
-              Add Category
-            </Button>
+              <Button
+                onClick={() => {
+                  if (this.state.categories.length > 1) {
+                    const copy = [...this.state.categories];
+                    copy.pop();
+                    this.setState({ categories: copy });
+                  }
+                }}
+                className={classes.addCategoryButton}
+              >
+                Remove Category
+              </Button>
+              <Button
+                onClick={() => {
+                  this.setState({
+                    categories: this.state.categories.concat([
+                      { name: "", weight: "" }
+                    ])
+                  });
+                }}
+                className={classes.addCategoryButton}
+              >
+                Add Category
+              </Button>
+            </Grid>
             <Typography className={classes.error}>
               {this.state.error}
             </Typography>
