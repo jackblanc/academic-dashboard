@@ -8,7 +8,6 @@ import {
   Divider,
   List
 } from "@material-ui/core";
-import AllCourses from "@material-ui/icons/BorderAll";
 import HomeIcon from "@material-ui/icons/Home";
 import LibraryBooks from "@material-ui/icons/LibraryBooks";
 
@@ -55,7 +54,7 @@ function SideDrawer(props) {
         <ListItem
           button
           onClick={() => {
-            props.history.push("/");
+            props.history.push("/home");
             props.closeDrawer();
           }}
         >
@@ -63,18 +62,6 @@ function SideDrawer(props) {
             <HomeIcon />
           </ListItemIcon>
           <ListItemText>Home</ListItemText>
-        </ListItem>
-        <ListItem
-          button
-          onClick={() => {
-            props.history.push("/dashboard");
-            props.closeDrawer();
-          }}
-        >
-          <ListItemIcon>
-            <AllCourses />
-          </ListItemIcon>
-          <ListItemText>Dashboard</ListItemText>
         </ListItem>
         <ListItem
           button

@@ -2,11 +2,11 @@ import React, { Component } from "react";
 
 import { Switch, Route, withRouter, Redirect } from "react-router-dom";
 
-import Dashboard from "./Containers/Dashboard";
+import Home from "./Containers/Home";
 import Authenticate from "./Containers/Auth";
 import Header from "./Components/Layout/Header";
 import SideDrawer from "./Components/Layout/SideDrawer";
-import HomeContent from "./Containers/HomeContent";
+import Landing from "./Containers/Landing";
 import Todo from "./Containers/Todo";
 
 import * as actions from "./store/actions/index";
@@ -27,7 +27,7 @@ class App extends Component {
     let routes = (
       <Switch>
         <Route component={Authenticate} path="/auth/" />
-        <Route exact component={HomeContent} path="/" />
+        <Route exact component={Landing} path="/" />
         <Redirect to="/" />
       </Switch>
     );
@@ -36,12 +36,12 @@ class App extends Component {
       routes = (
         <Switch>
           <Route component={Course} path="/courses/:id" />
-          <Route component={Dashboard} path="/dashboard/" />
+          <Route component={Home} path="/home/" />
           <Route component={Todo} path="/todo/" />
           <Route component={Authenticate} path="/auth/" />
           <Route component={Feedback} path="/feedback/" />
           <Route component={Gpa} path="/gpa/" />
-          <Route exact component={HomeContent} path="/" />
+          <Route exact component={Landing} path="/" />
           <Redirect to="/" />
         </Switch>
       );
@@ -75,7 +75,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(App));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(App));

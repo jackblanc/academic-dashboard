@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const HomeContent = props => {
+const HomeContent = ({ history, isAuthenticated, onAuth }) => {
   const classes = useStyles();
   return (
     <EmptyState
@@ -34,23 +34,23 @@ const HomeContent = props => {
         <>
           <Button
             color="primary"
-            onClick={() => props.history.push("/auth?isSignIn=true")}
+            onClick={() => history.push("/auth?isSignIn=true")}
           >
-            {props.isAuthenticated ? "Continue to DASH" : "Sign In"}
+            {isAuthenticated ? "Continue to DASH" : "Sign In"}
           </Button>
           <br />
-          {!props.isAuthenticated && (
-            <Button color="primary" onClick={() => props.history.push("/auth")}>
+          {!isAuthenticated && (
+            <Button color="primary" onClick={() => history.push("/auth")}>
               Sign Up
             </Button>
           )}
           <br />
-          {!props.isAuthenticated && (
+          {!isAuthenticated && (
             <Button
               color="primary"
               onClick={() => {
-                props.history.push("/auth");
-                props.onAuth("jblanc222@gmail.com", "testing", true);
+                history.push("/auth");
+                onAuth("jblanc222@gmail.com", "testing", true);
               }}
             >
               View Demo

@@ -89,7 +89,7 @@ class Auth extends Component {
 
     let redirect = null;
     if (this.props.isAuthenticated) {
-      redirect = <Redirect to="/dashboard" />;
+      redirect = <Redirect to="/home" />;
     }
 
     return (
