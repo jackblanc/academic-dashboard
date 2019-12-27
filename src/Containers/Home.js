@@ -195,7 +195,7 @@ const Home = ({
                 history.push("/gpa");
               }}
             >
-              ADD COURSE
+              VIEW GRADES
             </Button>
           </CardActions>
         </Card>
