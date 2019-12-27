@@ -69,7 +69,6 @@ export const addAssignment = (
       dueTime.getMinutes(),
       dueTime.getSeconds()
     );
-    console.log(combinedDueDateTime);
     dispatch(
       addAssignmentSuccess(
         assignmentName,

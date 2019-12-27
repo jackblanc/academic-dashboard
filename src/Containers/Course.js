@@ -21,6 +21,7 @@ import * as actions from "../store/actions/index";
 import AddAssignment from "../Components/AddAssignment";
 import { Check, NotInterested } from "@material-ui/icons";
 import { POPOVER_ELEMENT_SWITCH } from "../constants";
+import DateSelect from "../Components/DateSelect";
 
 const styles = theme => {
   return {
@@ -52,7 +53,9 @@ class Course extends Component {
     pointsPossible: "",
     selectedAssignmentName: "",
     selectedCategoryName: "",
-    categoryWeight: ""
+    categoryWeight: "",
+    dueDate: new Date(),
+    dueTime: new Date()
   };
 
   handleClick = event => {
@@ -67,9 +70,10 @@ class Course extends Component {
       selectedCategoryName,
       categoryWeight,
       pointsEarned,
-      pointsPossible
+      pointsPossible,
+      dueDate,
+      dueTime
     } = this.state;
-    this.setState({ anchorEl: null });
     switch (anchorEl.id) {
       case POPOVER_ELEMENT_SWITCH.CATEGORY_WEIGHT:
         editCategory(
@@ -100,9 +104,30 @@ class Course extends Component {
           pointsPossible: ""
         });
         break;
+      case POPOVER_ELEMENT_SWITCH.DUE_DATE:
+        if (!dueDate || !dueTime) {
+          break;
+        }
+        const combinedDueDateTime = new Date(
+          dueDate.getFullYear(),
+          dueDate.getMonth(),
+          dueDate.getDate(),
+          dueTime.getHours(),
+          dueTime.getMinutes(),
+          dueTime.getSeconds()
+        ).toISOString();
+        editAssignment(
+          selectedCourseID,
+          selectedCategoryName,
+          selectedAssignmentName,
+          "dueDate",
+          combinedDueDateTime
+        );
+        break;
       default:
         return null;
     }
+    this.setState({ anchorEl: null });
   };
 
   getAssignmentRows = () => {
@@ -153,9 +178,22 @@ class Course extends Component {
             </Button>
           </TableCell>
           <TableCell>
-            {dueDate === null
-              ? "Enter a due date"
-              : new Date(dueDate).toLocaleString()}
+            <Button
+              onClick={event => {
+                this.setState({
+                  dueDate: dueDate,
+                  selectedAssignmentName: assignmentName
+                });
+                this.handleClick(event, POPOVER_ELEMENT_SWITCH.DUE_DATE);
+              }}
+              id={POPOVER_ELEMENT_SWITCH.DUE_DATE}
+            >
+              {dueDate === null || isNaN(Date.parse(dueDate))
+                ? "Enter a due date"
+                : new Date(dueDate).toLocaleTimeString() +
+                  " " +
+                  new Date(dueDate).toDateString()}
+            </Button>
           </TableCell>
           <TableCell>
             <Button
@@ -227,7 +265,12 @@ class Course extends Component {
               </Button>
             </TableCell>
             <TableCell>
-              <Button onClick={() => setSelectedCategory(category.name)}>
+              <Button
+                onClick={() => {
+                  this.setState({ selectedCategoryName: category.name });
+                  setSelectedCategory(category.name);
+                }}
+              >
                 {percentageSignUtil(
                   convertAssignmentsToPercent(category.assignments)
                 )}
@@ -272,6 +315,19 @@ class Course extends Component {
   getPopoverContent = () => {
     if (this.state.anchorEl) {
       switch (this.state.anchorEl.id) {
+        case POPOVER_ELEMENT_SWITCH.DUE_DATE:
+          return (
+            <DateSelect
+              dueDate={this.state.dueDate}
+              dueTime={this.state.dueTime}
+              handleChangeDueDate={newDate =>
+                this.setState({ dueDate: newDate })
+              }
+              handleChangeDueTime={newTime =>
+                this.setState({ dueTime: newTime })
+              }
+            />
+          );
         case POPOVER_ELEMENT_SWITCH.CATEGORY_WEIGHT:
           return (
             <TextField
