@@ -15,8 +15,6 @@ import Course from "./Containers/Course";
 import Gpa from "./Containers/Gpa";
 // import Feedback from "./Containers/Feedback";
 
-// TODO make to-do list container
-
 class App extends Component {
   constructor(props) {
     super(props);
