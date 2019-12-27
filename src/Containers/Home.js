@@ -28,10 +28,27 @@ const styles = theme => {
     },
     title: {
       marginBottom: theme.spacing(4),
-      textAlign: "center"
+      textAlign: "left"
+    },
+    sectionTitle: {
+      marginTop: theme.spacing(4),
+      textAlign: "left"
     },
     card: {
-      width: 275
+      width: 275,
+      // TODO: make 100% width work on courses. Issue with mapping I believe.
+      [theme.breakpoints.down("xs")]: {
+        width: "100%"
+      }
+    },
+    page: {
+      [theme.breakpoints.up("md")]: {
+        marginLeft: theme.spacing(10),
+        marginRight: theme.spacing(10)
+      },
+      [theme.breakpoints.down("md")]: {
+        marginLeft: theme.spacing(2)
+      }
     }
   };
 };
@@ -44,54 +61,82 @@ const Home = ({
   courseSelectedHandler,
   history
 }) => (
-  <>
+  <div className={classes.page}>
     <div className={classes.paper}>
       <Typography variant="h1" className={classes.title}>
-        Home
+        Academic Dashboard
+      </Typography>
+      <Typography variant="subtitle1" color="textSecondary">
+        Welcome to your new academic planner, DASH: built by a student, for
+        students
       </Typography>
     </div>
+    {coursesList && (
+      <>
+        <Typography variant="h4" className={classes.sectionTitle} gutterBottom>
+          View Your Courses:
+        </Typography>
+        <Grid
+          container
+          direction="row"
+          justify="flex-start"
+          alignItems="center"
+          spacing={3}
+          xs={12}
+        >
+          {Object.entries(coursesList).map(([courseID, course]) => (
+            <Grid item key={courseID}>
+              <Card className={classes.card}>
+                <CardContent>
+                  <Typography variant="h4">{course.title}</Typography>
+                  <Typography variant="h5">{courseID}</Typography>
+                  <Typography variant="h6">
+                    {"Current Grade: " +
+                      percentageSignUtil(
+                        convertCategoriesToNumeric(course.categories)
+                      )}
+                  </Typography>
+                </CardContent>
+                <CardActions>
+                  <Button
+                    size="small"
+                    onClick={() => {
+                      courseSelectedHandler(courseID);
+                      history.push("/courses/" + courseID);
+                    }}
+                  >
+                    VIEW COURSE
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </>
+    )}
+    <Typography variant="h4" className={classes.sectionTitle} gutterBottom>
+      Build your DASH:
+    </Typography>
     <Grid
       container
       direction="row"
-      justify="center"
+      justify="flex-start"
       alignItems="center"
       spacing={3}
+      xs={12}
     >
-      {coursesList &&
-        Object.entries(coursesList).map(([courseID, course]) => (
-          <Grid item key={courseID}>
-            <Card className={classes.card}>
-              <CardContent>
-                <Typography variant="h4">{course.title}</Typography>
-                <Typography variant="h5">{courseID}</Typography>
-                <Typography variant="h6">
-                  {"Current Grade: " +
-                    percentageSignUtil(
-                      convertCategoriesToNumeric(course.categories)
-                    )}
-                </Typography>
-              </CardContent>
-              <CardActions>
-                <Button
-                  size="small"
-                  onClick={() => {
-                    courseSelectedHandler(courseID);
-                    history.push("/courses/" + courseID);
-                  }}
-                >
-                  VIEW COURSE
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-        ))}
       <Grid item>
         <Card className={classes.card}>
-          <CardContent className={classes.addCard}>
+          <CardContent>
             <Typography variant="h5" component="h2">
               Create a New Course
             </Typography>
-            {!coursesList && (
+            {coursesList ? (
+              <Typography variant="body2" component="p">
+                Add a new course to your DASH to get all of your upcoming
+                assignments and grades in one place
+              </Typography>
+            ) : (
               <Typography variant="body2" component="p">
                 Click the button below to add your first course to DASH!
               </Typography>
@@ -111,7 +156,7 @@ const Home = ({
       </Grid>
       <Grid item>
         <Card className={classes.card}>
-          <CardContent className={classes.addCard}>
+          <CardContent>
             <Typography variant="h5" component="h2">
               View Upcoming Assignments
             </Typography>
@@ -134,7 +179,7 @@ const Home = ({
       </Grid>
       <Grid item>
         <Card className={classes.card}>
-          <CardContent className={classes.addCard}>
+          <CardContent>
             <Typography variant="h5" component="h2">
               View Grade Report &amp; GPA
             </Typography>
@@ -157,7 +202,7 @@ const Home = ({
       </Grid>
     </Grid>
     {showAddCourseDialog && <AddCourse />}
-  </>
+  </div>
 );
 
 const mapStateToProps = state => {

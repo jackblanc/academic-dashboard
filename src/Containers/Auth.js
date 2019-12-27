@@ -62,46 +62,34 @@ class Auth extends Component {
     }
   }
 
-  onAlternate = () => {
-    const bool = this.state.isSignIn;
-    this.setState({ isSignIn: !bool });
-  };
+  handleToggleSignInSignUp = () =>
+    this.setState(prevState => {
+      return {
+        isSignIn: !prevState.isSignIn
+      };
+    });
 
-  submitHandler = () => {
+  submitHandler = () =>
     this.props.onAuth(
       this.state.email,
       this.state.password,
       this.state.isSignIn
     );
-  };
 
   render() {
-    const { classes } = this.props;
-
-    let errorMessage = "";
-    if (this.props.error) {
-      errorMessage = (
-        <Typography className={classes.error}>
-          {this.props.error.replace("_", " ")}
-        </Typography>
-      );
-    }
-
-    let redirect = null;
-    if (this.props.isAuthenticated) {
-      redirect = <Redirect to="/home" />;
-    }
+    const { classes, error, isAuthenticated, onAuth } = this.props;
+    const { isSignIn, email, password } = this.state;
 
     return (
       <Container component="main" maxWidth="xs">
-        {redirect}
+        {isAuthenticated && <Redirect to="/home" />}
         <CssBaseline />
         <div className={classes.paper}>
           <Avatar className={classes.avatar}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            {this.state.isSignIn ? "Sign In" : "Sign Up"}
+            {isSignIn ? "Sign In" : "Sign Up"}
           </Typography>
           <form className={classes.form}>
             <TextField
@@ -114,13 +102,12 @@ class Auth extends Component {
               name="email"
               autoComplete="email"
               autoFocus
-              value={this.state.email}
-              onChange={event => {
+              value={email}
+              onChange={event =>
                 this.setState({
-                  ...this.state,
                   email: event.target.value
-                });
-              }}
+                })
+              }
             />
             <TextField
               variant="outlined"
@@ -132,15 +119,18 @@ class Auth extends Component {
               type="password"
               id="password"
               autoComplete="current-password"
-              value={this.state.password}
-              onChange={event => {
+              value={password}
+              onChange={event =>
                 this.setState({
-                  ...this.state,
                   password: event.target.value
-                });
-              }}
+                })
+              }
             />
-            {errorMessage}
+            {error && (
+              <Typography className={classes.error}>
+                {error.replace("_", " ")}
+              </Typography>
+            )}
             <Button
               type="submit"
               fullWidth
@@ -149,20 +139,16 @@ class Auth extends Component {
               className={classes.submit}
               onClick={event => {
                 event.preventDefault();
-                this.props.onAuth(
-                  this.state.email,
-                  this.state.password,
-                  this.state.isSignIn
-                );
+                onAuth(email, password, isSignIn);
               }}
             >
-              {this.state.isSignIn ? "Sign In" : "Sign Up"}
+              {isSignIn ? "Sign In" : "Sign Up"}
             </Button>
             <Grid container>
               <Grid item xs />
               <Grid item>
-                <Link onClick={this.onAlternate} variant="body2">
-                  {this.state.isSignIn
+                <Link onClick={this.handleToggleSignInSignUp} variant="body2">
+                  {isSignIn
                     ? "Don't have an account? Sign Up"
                     : "Already have an account? Sign In"}
                 </Link>
