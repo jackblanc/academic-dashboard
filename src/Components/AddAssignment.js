@@ -13,13 +13,8 @@ import {
   Box
 } from "@material-ui/core";
 import { connect } from "react-redux";
-import DateFnsUtils from "@date-io/date-fns";
-import {
-  KeyboardDatePicker,
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker
-} from "@material-ui/pickers";
 import * as actions from "../store/actions/index";
+import DateSelect from "./DateSelect";
 
 const styles = theme => {
   return {
@@ -36,7 +31,8 @@ class AddCourse extends Component {
     pointsPossible: "",
     isSubmitted: false,
     isGraded: false,
-    dueDate: new Date()
+    dueDate: new Date(),
+    dueTime: new Date()
   };
 
   render() {
@@ -104,37 +100,16 @@ class AddCourse extends Component {
             />
           </Box>
           {!this.state.isSubmitted && (
-            <Box>
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <KeyboardDatePicker
-                  disableToolbar
-                  variant="inline"
-                  format="MM/dd/yyyy"
-                  margin="normal"
-                  id="date-picker-inline"
-                  label="Due Date"
-                  value={this.state.dueDate}
-                  onChange={date => {
-                    this.setState({ dueDate: date });
-                  }}
-                  KeyboardButtonProps={{
-                    "aria-label": "change date"
-                  }}
-                />
-                <KeyboardTimePicker
-                  margin="normal"
-                  id="time-picker"
-                  label="Due Time"
-                  value={this.state.dueDate}
-                  onChange={date => {
-                    this.setState({ dueDate: date });
-                  }}
-                  KeyboardButtonProps={{
-                    "aria-label": "change time"
-                  }}
-                />
-              </MuiPickersUtilsProvider>
-            </Box>
+            <DateSelect
+              dueDate={this.state.dueDate}
+              dueTime={this.state.dueTime}
+              handleChangeDueDate={newDate =>
+                this.setState({ dueDate: newDate })
+              }
+              handleChangeDueTime={newTime =>
+                this.setState({ dueTime: newTime })
+              }
+            />
           )}
           {this.state.isGraded && (
             <Fragment>
@@ -201,6 +176,7 @@ class AddCourse extends Component {
       this.state.pointsEarned,
       this.state.pointsPossible,
       this.state.dueDate,
+      this.state.dueTime,
       this.state.isSubmitted,
       this.state.isGraded,
       this.props.courseID,
@@ -227,6 +203,7 @@ const mapDispatchToProps = dispatch => {
       pointsEarned,
       pointsPossible,
       dueDate,
+      dueTime,
       isSubmitted,
       isGraded,
       courseID,
@@ -238,6 +215,7 @@ const mapDispatchToProps = dispatch => {
           pointsEarned,
           pointsPossible,
           dueDate,
+          dueTime,
           isSubmitted,
           isGraded,
           courseID,

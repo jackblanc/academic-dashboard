@@ -32,6 +32,7 @@ export const addAssignment = (
   pointsEarned,
   pointsPossible,
   dueDate,
+  dueTime,
   isSubmitted,
   isGraded,
   courseID,
@@ -60,12 +61,21 @@ export const addAssignment = (
     error.pointsPossibleError === null &&
     error.pointsEarnedError === null
   ) {
+    const combinedDueDateTime = new Date(
+      dueDate.getFullYear(),
+      dueDate.getMonth(),
+      dueDate.getDate(),
+      dueTime.getHours(),
+      dueTime.getMinutes(),
+      dueTime.getSeconds()
+    );
+    console.log(combinedDueDateTime);
     dispatch(
       addAssignmentSuccess(
         assignmentName,
         pointsEarned,
         pointsPossible,
-        dueDate,
+        combinedDueDateTime,
         isSubmitted,
         isGraded,
         courseID,
@@ -88,7 +98,7 @@ export const addAssignmentSuccess = (
   assignmentName,
   pointsEarned,
   pointsPossible,
-  dueDate,
+  combinedDueDateTime,
   isSubmitted,
   isGraded,
   courseID,
@@ -108,7 +118,7 @@ export const addAssignmentSuccess = (
   reference.child("/isSubmitted/").set(isSubmitted);
   reference.child("/pointsEarned/").set(pointsEarned);
   reference.child("/pointsPossible/").set(pointsPossible);
-  reference.child("/dueDate/").set(dueDate.toISOString());
+  reference.child("/dueDate/").set(combinedDueDateTime.toISOString());
   reference.child("/dateCreated/").set(new Date().toISOString());
   dispatch({
     type: types.ADD_ASSIGNMENT_SUCCESS
