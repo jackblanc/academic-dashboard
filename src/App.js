@@ -13,7 +13,7 @@ import * as actions from "./store/actions/index";
 import { connect } from "react-redux";
 import Course from "./Containers/Course";
 import Gpa from "./Containers/Gpa";
-import Feedback from "./Containers/Feedback";
+// import Feedback from "./Containers/Feedback";
 
 // TODO make to-do list container
 
@@ -39,7 +39,7 @@ class App extends Component {
           <Route component={Home} path="/home/" />
           <Route component={Todo} path="/todo/" />
           <Route component={Authenticate} path="/auth/" />
-          <Route component={Feedback} path="/feedback/" />
+          {/* <Route component={Feedback} path="/feedback/" /> */}
           <Route component={Gpa} path="/gpa/" />
           <Route exact component={Landing} path="/" />
           <Redirect to="/" />
