@@ -1,10 +1,8 @@
 // TODO implement validation using redux
 
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 
 import {
-  Dialog,
-  DialogTitle,
   DialogContent,
   DialogContentText,
   TextField,
@@ -12,9 +10,10 @@ import {
   Button,
   Grid,
   withStyles,
-  Typography,
-  Box
+  Typography
 } from "@material-ui/core";
+
+import ResponsiveModal from "../Components/ResponsiveModal";
 
 import { connect } from "react-redux";
 import * as actions from "../store/actions/index";
@@ -22,10 +21,9 @@ import * as actions from "../store/actions/index";
 const styles = theme => {
   return {
     error: {
-      color: theme.palette.error.main
-    },
-    invalidInput: {
-      color: theme.palette.error.main
+      color: theme.palette.error.main,
+      textAlign: "center",
+      marginTop: theme.spacing(4)
     },
     addRemoveCategoryButtonContainer: {
       "margin-top": "5%"
@@ -37,7 +35,7 @@ class AddCourse extends Component {
   state = {
     courseName: "",
     courseID: "",
-    credits: null,
+    credits: "",
     categories: [
       {
         name: "",
@@ -48,107 +46,118 @@ class AddCourse extends Component {
         weight: ""
       }
     ],
-    nameIDPage: true,
-    categoriesPage: false,
-    numCategories: 4,
-    error: null
+    showFirstPage: true,
+    error: ""
   };
 
   render() {
-    const { classes } = this.props;
-
-    let page = null;
-    if (this.state.nameIDPage) {
-      page = (
-        <Fragment>
-          <DialogContent>
-            <DialogContentText>
-              Enter the following data to add a new course to your dashboard.
-            </DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Course Name"
-              type="email"
-              fullWidth
-              autoComplete="off"
-              value={this.state.courseName}
-              onChange={event => {
-                this.setState({
-                  ...this.state,
-                  courseName: event.target.value
-                });
-              }}
-            />
-            <TextField
-              margin="dense"
-              id="ID"
-              label="Course ID"
-              type="text"
-              fullWidth
-              autoComplete="off"
-              value={this.state.courseID}
-              onChange={event => {
-                this.setState({
-                  ...this.state,
-                  courseID: event.target.value
-                });
-              }}
-            />
-            <TextField
-              margin="dense"
-              id="Credits"
-              label="# of Credits"
-              type="text"
-              fullWidth
-              autoComplete="off"
-              value={this.state.credits}
-              onChange={event => {
-                this.setState({
-                  ...this.state,
-                  credits: event.target.value
-                });
-              }}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={() => this.props.setAddCourseDialogState(false)}
-              color="primary"
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={() => {
-                this.setState({ nameIDPage: false, categoriesPage: true });
-              }}
-              color="primary"
-            >
-              Next
-            </Button>
-          </DialogActions>
-        </Fragment>
-      );
-    } else if (this.state.categoriesPage) {
-      page = (
-        <Fragment>
-          <DialogContent className={classes.content}>
-            <DialogContentText>
-              Enter the grading schema for this course. Example: Quizzes count
-              for 20% of final grade, Tests for 30%, etc... sum to 100% please
-            </DialogContentText>
-            <Grid container justify="center" spacing="1">
-              {this.state.categories.map((category, index) => {
-                return (
-                  <Box item>
-                    <Grid>
+    const {
+      classes,
+      showAddCourseDialog,
+      setAddCourseDialogState
+    } = this.props;
+    const {
+      showFirstPage,
+      courseName,
+      courseID,
+      credits,
+      categories,
+      error
+    } = this.state;
+    return (
+      <ResponsiveModal
+        open={showAddCourseDialog}
+        onClose={() => setAddCourseDialogState(false)}
+        title={"Add a Course"}
+      >
+        {showFirstPage ? (
+          <>
+            <DialogContent>
+              <DialogContentText>
+                Enter the following data to add a new course to your dashboard.
+              </DialogContentText>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Course Name"
+                type="email"
+                fullWidth
+                autoComplete="off"
+                value={courseName}
+                onChange={event =>
+                  this.setState({
+                    courseName: event.target.value
+                  })
+                }
+              />
+              <TextField
+                margin="dense"
+                id="ID"
+                label="Course ID"
+                type="text"
+                fullWidth
+                autoComplete="off"
+                value={courseID}
+                onChange={event =>
+                  this.setState({
+                    courseID: event.target.value
+                  })
+                }
+              />
+              <TextField
+                margin="dense"
+                id="Credits"
+                label="# of Credits"
+                type="text"
+                fullWidth
+                autoComplete="off"
+                value={credits}
+                onChange={event =>
+                  this.setState({
+                    credits: event.target.value
+                  })
+                }
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={() => setAddCourseDialogState(false)}
+                color="primary"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => this.setState({ showFirstPage: false })}
+                color="primary"
+              >
+                Next
+              </Button>
+            </DialogActions>
+          </>
+        ) : (
+          <>
+            <DialogContent className={classes.content}>
+              <DialogContentText>
+                Enter the grading schema for this course. Example: Quizzes count
+                for 20% of final grade, Tests for 30%, etc... sum to 100% please
+              </DialogContentText>
+              <Grid
+                container
+                direction="row"
+                justify="flex-start"
+                alignItems="center"
+                spacing={3}
+              >
+                {categories.map((category, index) => {
+                  return (
+                    <Grid item key={category + index} xs={12}>
                       <TextField
                         label={"Category Name"}
-                        className={classes.input}
-                        value={this.state.categories[index].name}
+                        value={categories[index].name}
+                        fullWidth
                         onChange={event => {
-                          const newCategories = this.state.categories.map(
+                          const newCategories = categories.map(
                             (category, idx) => {
                               if (index !== idx) return category;
                               return {
@@ -162,10 +171,10 @@ class AddCourse extends Component {
                       />
                       <TextField
                         label={"Category Weight"}
-                        className={classes.input}
-                        value={this.state.categories[index].weight}
+                        value={categories[index].weight}
+                        fullWidth
                         onChange={event => {
-                          const newCategories = this.state.categories.map(
+                          const newCategories = categories.map(
                             (category, idx) => {
                               if (index !== idx) return category;
                               return {
@@ -178,70 +187,56 @@ class AddCourse extends Component {
                         }}
                       />
                     </Grid>
-                  </Box>
-                );
-              })}
-            </Grid>
-            <Grid
-              container
-              justify="center"
-              spacing="2"
-              className={classes.addRemoveCategoryButtonContainer}
-            >
-              <Button
-                onClick={() => {
-                  if (this.state.categories.length > 1) {
-                    const copy = [...this.state.categories];
-                    copy.pop();
-                    this.setState({ categories: copy });
+                  );
+                })}
+              </Grid>
+              <Grid
+                container
+                justify="center"
+                spacing={2}
+                className={classes.addRemoveCategoryButtonContainer}
+              >
+                <Button
+                  onClick={() => {
+                    if (categories.length > 1) {
+                      const copy = [...categories];
+                      copy.pop();
+                      this.setState({ categories: copy });
+                    }
+                  }}
+                  className={classes.addCategoryButton}
+                >
+                  Remove Category
+                </Button>
+                <Button
+                  onClick={() =>
+                    this.setState({
+                      categories: categories.concat([{ name: "", weight: "" }])
+                    })
                   }
-                }}
-                className={classes.addCategoryButton}
-              >
-                Remove Category
-              </Button>
+                  className={classes.addCategoryButton}
+                >
+                  Add Category
+                </Button>
+              </Grid>
+              {error && (
+                <Typography className={classes.error}>{error}</Typography>
+              )}
+            </DialogContent>
+            <DialogActions>
               <Button
-                onClick={() => {
-                  this.setState({
-                    categories: this.state.categories.concat([
-                      { name: "", weight: "" }
-                    ])
-                  });
-                }}
-                className={classes.addCategoryButton}
+                onClick={() => this.setState({ showFirstPage: true })}
+                color="primary"
               >
-                Add Category
+                Previous
               </Button>
-            </Grid>
-            <Typography className={classes.error}>
-              {this.state.error}
-            </Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={() => {
-                this.setState({ nameIDPage: true, categoriesPage: false });
-              }}
-              color="primary"
-            >
-              Previous
-            </Button>
-            <Button onClick={() => this.submitHandler()} color="primary">
-              Submit
-            </Button>
-          </DialogActions>
-        </Fragment>
-      );
-    }
-    return (
-      <Dialog
-        open={this.props.showAddCourseDialog}
-        onClose={() => this.props.setAddCourseDialogState(false)}
-        aria-labelledby="form-dialog-title"
-      >
-        <DialogTitle id="form-dialog-title">Add a Course</DialogTitle>
-        {page}
-      </Dialog>
+              <Button onClick={this.submitHandler} color="primary">
+                Submit
+              </Button>
+            </DialogActions>
+          </>
+        )}
+      </ResponsiveModal>
     );
   }
 
