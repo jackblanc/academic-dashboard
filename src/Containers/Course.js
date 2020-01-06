@@ -181,7 +181,7 @@ class Course extends Component {
             <Button
               onClick={event => {
                 this.setState({
-                  dueDate: dueDate,
+                  dueDate: new Date(dueDate),
                   selectedAssignmentName: assignmentName
                 });
                 this.handleClick(event, POPOVER_ELEMENT_SWITCH.DUE_DATE);
