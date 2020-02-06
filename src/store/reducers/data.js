@@ -2,7 +2,7 @@ import * as types from "../actions/types";
 import { updateObject } from "../util";
 
 const initialState = {
-  coursesList: null,
+  coursesList: {},
   addAssignmentError: {
     assignmentNameError: null,
     pointsEarnedError: null,

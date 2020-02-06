@@ -38,26 +38,7 @@ const styles = theme => {
 
 class Gpa extends Component {
   render() {
-    const { classes } = this.props;
-    const courseTableBody = [];
-    for (let key in this.props.coursesList) {
-      const course = this.props.coursesList[key];
-      const courseGPA = convertNumericGradeToGPA(
-        convertCategoriesToNumeric(course.categories)
-      );
-      courseTableBody.push(
-        <TableRow key={key}>
-          <TableCell>{course.title}</TableCell>
-          <TableCell>
-            {percentageSignUtil(convertCategoriesToNumeric(course.categories))}
-          </TableCell>
-          <TableCell>
-            {!isNaN(courseGPA) ? courseGPA.toFixed(2) : "Not Applicable"}
-          </TableCell>
-          <TableCell>{course.credits}</TableCell>
-        </TableRow>
-      );
-    }
+    const { classes, coursesList } = this.props;
     return (
       <div className={classes.paper}>
         <Typography variant="h2" className={classes.title}>
@@ -65,20 +46,45 @@ class Gpa extends Component {
         </Typography>
         <Typography variant="h4" className={classes.title}>
           Current Semester GPA:{" "}
-          {isNaN(calculateGPA(this.props.coursesList))
-            ? calculateGPA(this.props.coursesList)
-            : calculateGPA(this.props.coursesList).toFixed(2)}
+          {isNaN(calculateGPA(coursesList))
+            ? calculateGPA(coursesList)
+            : calculateGPA(coursesList).toFixed(2)}
         </Typography>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>Course Name</TableCell>
               <TableCell>Course Grade</TableCell>
+              <TableCell>Letter Grade</TableCell>
               <TableCell>Corresponding GPA</TableCell>
               <TableCell># of Credits</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>{courseTableBody}</TableBody>
+          <TableBody>
+            {Object.entries(coursesList).map(([courseID, course]) => {
+              const courseGPA = convertNumericGradeToGPA(
+                convertCategoriesToNumeric(course.categories)
+              );
+              // TODO: Add the ability to configure grade breakpoints.
+              return (
+                <TableRow key={courseID}>
+                  <TableCell>{course.title}</TableCell>
+                  <TableCell>
+                    {percentageSignUtil(
+                      convertCategoriesToNumeric(course.categories)
+                    )}
+                  </TableCell>
+                  <TableCell>A</TableCell>
+                  <TableCell>
+                    {!isNaN(courseGPA)
+                      ? courseGPA.toFixed(2)
+                      : "Not Applicable"}
+                  </TableCell>
+                  <TableCell>{course.credits}</TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
         </Table>
       </div>
     );

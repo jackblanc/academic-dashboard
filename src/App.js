@@ -16,22 +16,16 @@ import Gpa from "./Containers/Gpa";
 // import Feedback from "./Containers/Feedback";
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.props.tryAutoAuth();
-  }
-
   render() {
-    let routes = (
-      <Switch>
-        <Route component={Authenticate} path="/auth/" />
-        <Route exact component={Landing} path="/" />
-        <Redirect to="/" />
-      </Switch>
-    );
-
-    if (this.props.isAuthenticated) {
-      routes = (
+    this.props.tryAutoAuth();
+    // TODO: investigate a way to limit routes while still letting direct routes get hit on page load.
+    return (
+      <div>
+        <Header />
+        <SideDrawer
+          isOpen={this.props.isDrawerOpen}
+          closeDrawer={() => this.props.closeDrawer()}
+        />
         <Switch>
           <Route component={Course} path="/courses/:id" />
           <Route component={Home} path="/home/" />
@@ -42,17 +36,6 @@ class App extends Component {
           <Route exact component={Landing} path="/" />
           <Redirect to="/" />
         </Switch>
-      );
-    }
-
-    return (
-      <div>
-        <Header />
-        <SideDrawer
-          isOpen={this.props.isDrawerOpen}
-          closeDrawer={() => this.props.closeDrawer()}
-        />
-        {routes}
       </div>
     );
   }
