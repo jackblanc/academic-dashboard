@@ -55,7 +55,7 @@ class Gpa extends Component {
             <TableRow>
               <TableCell>Course Name</TableCell>
               <TableCell>Course Grade</TableCell>
-              <TableCell>Letter Grade</TableCell>
+              {/* <TableCell>Letter Grade</TableCell> */}
               <TableCell>Corresponding GPA</TableCell>
               <TableCell># of Credits</TableCell>
             </TableRow>
@@ -74,7 +74,7 @@ class Gpa extends Component {
                       convertCategoriesToNumeric(course.categories)
                     )}
                   </TableCell>
-                  <TableCell>A</TableCell>
+                  {/* <TableCell>A</TableCell> */}
                   <TableCell>
                     {!isNaN(courseGPA)
                       ? courseGPA.toFixed(2)
